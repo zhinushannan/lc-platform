@@ -13,6 +13,21 @@ public enum MySQLTypeEnum {
 
     TINYINT("tinyint", Integer.class.getTypeName(), Integer.class, true, 4),
     INT("int", Integer.class.getTypeName(), Integer.class, true, 11),
+
+    CHAR("char", String.class.getTypeName(), String.class, true, 1),
+    VARCHAR("varchar", String.class.getTypeName(), String.class, true, 255),
+
+    /*
+    double
+    decimal
+
+    char
+    varchar
+    text
+
+    date
+    datetime
+     */
     ;
 
     private final String jdbcType;
