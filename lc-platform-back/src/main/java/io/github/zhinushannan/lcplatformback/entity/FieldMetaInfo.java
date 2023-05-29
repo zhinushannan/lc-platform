@@ -27,8 +27,11 @@ public class FieldMetaInfo extends BaseEntity {
     @TableField("field_type")
     private Integer fieldType;
 
+    @TableField("field_length")
+    private Integer fieldLength;
+
     @TableField("nullable")
-    private Integer nullable;
+    private Boolean nullable;
 
     @TableField("business_field_name")
     private String businessFieldName;

@@ -10,7 +10,7 @@
             `update_time` datetime   NOT NULL,
             `deleted`     tinyint(4) NOT NULL,
 
-            <foreach item="ddl" collection="fieldDDL" separator=" " index="i">
+            <foreach item="ddl" collection="fieldDdl" separator=" " index="i">
                 ${ddl}
             </foreach>
 
