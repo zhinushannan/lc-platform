@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.zhinushannan.lcplatformback.mapper.CreateBusinessMapper">
+
+    <update id="createNewTable">
+        CREATE TABLE `${tableName}`
+        (
+            `id`          bigint(20) NOT NULL,
+            `create_time` datetime   NOT NULL,
+            `update_time` datetime   NOT NULL,
+            `deleted`     tinyint(4) NOT NULL,
+
+            <foreach item="ddl" collection="fieldDDL" separator=" " index="i">
+                ${ddl}
+            </foreach>
+
+            PRIMARY KEY (`id`) USING BTREE
+        ) ENGINE = InnoDB
+          DEFAULT CHARSET = utf8mb4;
+    </update>
+
+</mapper>
