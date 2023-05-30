@@ -39,7 +39,8 @@ public class BaseEntity implements Serializable {
     /**
      * 逻辑删除
      */
-    @TableLogic
+    @TableLogic(value = "false", delval = "true")
+    @TableField(value = "deleted", fill = FieldFill.INSERT)
     private Boolean deleted;
 
 }
