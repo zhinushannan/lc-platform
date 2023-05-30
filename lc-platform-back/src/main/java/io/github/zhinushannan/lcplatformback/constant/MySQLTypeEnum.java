@@ -51,6 +51,10 @@ public enum MySQLTypeEnum {
         }
     }
 
+    public static MySQLTypeEnum getByJdbcType(String jdbcType) {
+        return JDBC_TYPE_ENUM.get(jdbcType);
+    }
+
     MySQLTypeEnum(String jdbcType, String javaType, Class<?> javaTypeClass, Boolean needLength, Integer defaultLength) {
         this.jdbcType = jdbcType;
         this.javaType = javaType;
