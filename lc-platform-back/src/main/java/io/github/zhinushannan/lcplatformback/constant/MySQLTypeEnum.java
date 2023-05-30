@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * mysql 数据类型
+ * author of this enum is chatgpt, if an error occurs, please contact openai
  */
 @Getter
 public enum MySQLTypeEnum {
