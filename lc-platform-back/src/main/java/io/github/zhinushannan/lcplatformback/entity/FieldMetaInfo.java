@@ -3,8 +3,7 @@ package io.github.zhinushannan.lcplatformback.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.zhinushannan.lcplatformback.bean.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 /**
  * <p>
@@ -16,31 +15,33 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("field_meta_info")
 public class FieldMetaInfo extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @TableField("physics_field_name")
-    private String physicsFieldName;
+    @TableField("physics_field_serial")
+    private Integer physicsFieldSerial;
+
+    @TableField("logic_field_name")
+    private String logicFieldName;
+
+    @TableField("business_field_name")
+    private String businessFieldName;
+
+    @TableField("table_meta_info_id")
+    private Long tableMetaInfoId;
 
     @TableField("field_type")
-    private Integer fieldType;
+    private String fieldType;
 
     @TableField("field_length")
     private Integer fieldLength;
 
     @TableField("nullable")
     private Boolean nullable;
-
-    @TableField("business_field_name")
-    private String businessFieldName;
-
-    @TableField("show_field_name")
-    private String showFieldName;
-
-    @TableField("table_metainfo_id")
-    private Long tableMetainfoId;
-
 
 }
