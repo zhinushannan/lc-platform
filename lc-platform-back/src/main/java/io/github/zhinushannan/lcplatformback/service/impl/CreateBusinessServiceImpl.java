@@ -29,6 +29,7 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
     private CreateBusinessMapper createBusinessMapper;
 
     // todo 需要进行事务控制
+    //  1、需要对逻辑表明做唯一处理
     @Override
     public Boolean createBusinessService(CreateBusinessDto dto) {
         // 组装 TableMetaInfo
@@ -91,7 +92,8 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
 
         int line = createBusinessMapper.createNewTable(tableName, fieldDdl);
 
-        CreateBusinessDto.PageInfo pageInfo = dto.getPageInfo();
+        // todo CreateBusinessDto.PageInfo pageInfo = dto.getPageInfo();
+
         return null;
     }
 }
