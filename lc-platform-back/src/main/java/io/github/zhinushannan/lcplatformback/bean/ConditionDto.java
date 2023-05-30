@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
 public class ConditionDto extends PageCondition<Object> {
 
     private JSONObject conditions;
