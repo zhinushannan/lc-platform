@@ -1,12 +1,9 @@
 package io.github.zhinushannan.lcplatformback.service;
 
-import io.github.zhinushannan.lcplatformback.entity.FieldMetaInfo;
-import io.github.zhinushannan.lcplatformback.entity.TableMetaInfo;
-
-import java.util.List;
+import io.github.zhinushannan.lcplatformback.dto.req.CreateBusinessDto;
 
 public interface CreateBusinessService {
 
-    Boolean createBusinessService(TableMetaInfo tableMetaInfo, List<FieldMetaInfo> fieldMetaInfos);
+    Boolean createBusinessService(CreateBusinessDto dto);
 
 }
