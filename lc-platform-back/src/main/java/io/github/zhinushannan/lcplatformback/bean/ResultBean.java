@@ -36,6 +36,10 @@ public class ResultBean<T> {
         return new ResultBean<>(code, message, null);
     }
 
+    public static <T> ResultBean<T> success() {
+        return create(200, null, null);
+    }
+
     public static <T> ResultBean<T> success(String message, T data) {
         return create(200, message, data);
     }

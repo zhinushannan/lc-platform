@@ -5,11 +5,10 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CreateBusinessDto {
+public class TableInfoReq {
 
     private TableInfo tableInfo;
     private List<FieldInfo> fieldInfos;
-    private PageInfo pageInfo;
 
     @Data
     public static class TableInfo {
@@ -24,12 +23,6 @@ public class CreateBusinessDto {
         private String fieldJdbcType;
         private Integer fieldJdbcLength;
         private Boolean nullable;
-    }
-
-    @Data
-    public static class PageInfo {
-        private List<String> showField;
-        private List<String> searchField;
     }
 
 }
