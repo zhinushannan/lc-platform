@@ -1,7 +1,7 @@
 package io.github.zhinushannan.lcplatformback.service;
 
 import io.github.zhinushannan.lcplatformback.bean.ResultBean;
-import io.github.zhinushannan.lcplatformback.dto.req.SelectShowFieldsReq;
+import io.github.zhinushannan.lcplatformback.dto.req.SelectEnableFieldsReq;
 import io.github.zhinushannan.lcplatformback.dto.req.TableInfoReq;
 
 public interface CreateBusinessService {
@@ -16,5 +16,10 @@ public interface CreateBusinessService {
     /**
      * 选择展示字段
      */
-    ResultBean<String> selectShowFields(SelectShowFieldsReq req);
+    ResultBean<String> selectShowFields(SelectEnableFieldsReq req);
+
+    /**
+     * 选择搜索字段
+     */
+    ResultBean<String> selectSearchFields(SelectEnableFieldsReq req);
 }

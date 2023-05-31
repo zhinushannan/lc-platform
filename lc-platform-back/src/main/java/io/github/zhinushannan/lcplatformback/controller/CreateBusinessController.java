@@ -1,14 +1,12 @@
 package io.github.zhinushannan.lcplatformback.controller;
 
 import io.github.zhinushannan.lcplatformback.bean.ResultBean;
-import io.github.zhinushannan.lcplatformback.dto.req.SelectShowFieldsReq;
+import io.github.zhinushannan.lcplatformback.dto.req.SelectEnableFieldsReq;
 import io.github.zhinushannan.lcplatformback.dto.req.TableInfoReq;
 import io.github.zhinushannan.lcplatformback.service.CreateBusinessService;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("create-business")
@@ -48,8 +46,16 @@ public class CreateBusinessController {
      * 选择展示字段
      */
     @PostMapping("select-show-field")
-    public ResultBean<String> selectShowFields(@RequestBody SelectShowFieldsReq req) {
+    public ResultBean<String> selectShowFields(@RequestBody SelectEnableFieldsReq req) {
         return createBusinessService.selectShowFields(req);
+    }
+
+    /**
+     * 选择搜索字段
+     */
+    @PostMapping("select-search-field")
+    public ResultBean<String> selectSearchFields(@RequestBody SelectEnableFieldsReq req) {
+        return createBusinessService.selectSearchFields(req);
     }
 
     /**
