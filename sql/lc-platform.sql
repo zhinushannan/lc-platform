@@ -11,7 +11,7 @@
  Target Server Version : 50740
  File Encoding         : 65001
 
- Date: 30/05/2023 16:19:35
+ Date: 31/05/2023 09:35:06
 */
 
 SET NAMES utf8mb4;
@@ -33,6 +33,8 @@ CREATE TABLE `field_meta_info` (
   `field_type` varchar(255) NOT NULL,
   `field_length` int(11) NOT NULL,
   `nullable` tinyint(4) NOT NULL,
+  `enable_show` tinyint(4) NOT NULL,
+  `enable_search` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -48,6 +50,7 @@ CREATE TABLE `table_meta_info` (
   `physics_table_serial` int(11) NOT NULL,
   `logic_table_name` varchar(255) NOT NULL,
   `business_table_name` varchar(255) NOT NULL,
+  `has_created` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
