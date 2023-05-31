@@ -8,6 +8,10 @@ import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * todo 1、字段名唯一性校验
+ * todo 2、锁机制优化
+ */
 @RestController
 @RequestMapping("create-business")
 public class CreateBusinessController {
