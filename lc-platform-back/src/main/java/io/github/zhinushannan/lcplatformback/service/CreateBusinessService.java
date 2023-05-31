@@ -11,8 +11,6 @@ public interface CreateBusinessService {
      */
     ResultBean<String> saveTableInfo(TableInfoReq req);
 
-    Boolean createBusinessService(TableInfoReq dto);
-
     /**
      * 选择展示字段
      */
@@ -22,4 +20,9 @@ public interface CreateBusinessService {
      * 选择搜索字段
      */
     ResultBean<String> selectSearchFields(SelectEnableFieldsReq req);
+
+    /**
+     * 创建物理表
+     */
+    ResultBean<String> createPhysicsTable(Long tableId);
 }

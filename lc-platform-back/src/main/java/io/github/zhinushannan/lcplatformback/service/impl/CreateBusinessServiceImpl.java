@@ -15,6 +15,7 @@ import io.github.zhinushannan.lcplatformback.service.FieldMetaInfoService;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
 import io.github.zhinushannan.lcplatformback.system.SystemConstant;
 import io.github.zhinushannan.lcplatformback.system.SystemInitialization;
+import io.github.zhinushannan.lcplatformback.util.DBConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,44 +93,6 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
         }
     }
 
-    // todo 需要进行事务控制
-    //  1、需要对逻辑表明做唯一处理
-    @Override
-    public Boolean createBusinessService(TableInfoReq dto) {
-
-
-
-//
-//        // 组装 tablename、字段的 ddl 语句
-//        String tableName = DBConvert.tableNameConvertBySerial(tableMetaInfo.getPhysicsTableSerial());
-//
-//        StringBuilder ddl = new StringBuilder();
-//        List<String> fieldDdl = new ArrayList<>();
-//
-//        for (FieldMetaInfo fieldMetaInfo : fieldMetaInfos) {
-//            ddl.delete(0, ddl.length());
-//            ddl.append("`").append(DBConvert.fieldNameConvertBySerial(fieldMetaInfo.getPhysicsFieldSerial())).append("`").append(" ")
-//                    .append(fieldMetaInfo.getFieldType());
-//
-//            boolean needLength = fieldMetaInfo.getFieldLength() != null;
-//            if (needLength) {
-//                ddl.append("(").append(fieldMetaInfo.getFieldLength()).append(")");
-//            }
-//            ddl.append(" ");
-//            if (!fieldMetaInfo.getNullable()) {
-//                ddl.append("NOT NULL");
-//            }
-//            ddl.append(", ");
-//            fieldDdl.add(ddl.toString());
-//        }
-//
-//        int line = createBusinessMapper.createNewTable(tableName, fieldDdl);
-
-        // todo CreateBusinessDto.PageInfo pageInfo = dto.getPageInfo();
-
-        return null;
-    }
-
     @Override
     public ResultBean<String> selectShowFields(SelectEnableFieldsReq req) {
         List<FieldMetaInfo> fieldMetaInfos = checkEnable(req);
@@ -154,6 +117,43 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
                 .peek(fieldMetaInfo -> fieldMetaInfo.setEnableSearch(true))
                 .collect(Collectors.toList());
         fieldMetaInfoService.updateBatchById(result);
+
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean<String> createPhysicsTable(Long tableId) {
+        TableMetaInfo tableMetaInfo = tableMetaInfoService.getById(tableId);
+        if (tableMetaInfo == null) {
+            return ResultBean.notFound("表不存在！");
+        }
+
+        List<FieldMetaInfo> fieldMetaInfos = fieldMetaInfoService.list(new QueryWrapper<FieldMetaInfo>().in("table_meta_info_id"));
+
+        // 组装 tablename、字段的 ddl 语句
+        String tableName = DBConvert.tableNameConvertBySerial(tableMetaInfo.getPhysicsTableSerial());
+
+        StringBuilder ddl = new StringBuilder();
+        List<String> fieldDdl = new ArrayList<>();
+
+        for (FieldMetaInfo fieldMetaInfo : fieldMetaInfos) {
+            ddl.delete(0, ddl.length());
+            ddl.append("`").append(DBConvert.fieldNameConvertBySerial(fieldMetaInfo.getPhysicsFieldSerial())).append("`").append(" ")
+                    .append(fieldMetaInfo.getFieldType());
+
+            boolean needLength = fieldMetaInfo.getFieldLength() != null;
+            if (needLength) {
+                ddl.append("(").append(fieldMetaInfo.getFieldLength()).append(")");
+            }
+            ddl.append(" ");
+            if (!fieldMetaInfo.getNullable()) {
+                ddl.append("NOT NULL");
+            }
+            ddl.append(", ");
+            fieldDdl.add(ddl.toString());
+        }
+
+        int line = createBusinessMapper.createNewTable(tableName, fieldDdl);
 
         return ResultBean.success();
     }

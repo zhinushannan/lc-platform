@@ -59,15 +59,11 @@ public class CreateBusinessController {
     }
 
     /**
-     * 新建一个业务
-     * 需要提供：
-     * 表信息：逻辑名称、业务名称
-     * 字段信息：逻辑名称、业务名称、字段类型、长度
-     * 页面信息：展示字段、搜索字段
+     * 创建物理表
      */
-    @PostMapping("")
-    public void create(@RequestBody TableInfoReq dto) {
-        createBusinessService.createBusinessService(dto);
+    @GetMapping("create-physics-table")
+    public ResultBean<String> createPhysicsTable(@RequestParam("tableId") Long tableId) {
+        return createBusinessService.createPhysicsTable(tableId);
     }
 
 }
