@@ -2,6 +2,9 @@ package io.github.zhinushannan.lcplatformback.controller;
 
 import cn.hutool.json.JSONObject;
 import io.github.zhinushannan.lcplatformback.bean.ConditionDto;
+import io.github.zhinushannan.lcplatformback.bean.ResultBean;
+import io.github.zhinushannan.lcplatformback.service.CrudService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,16 +13,19 @@ import java.util.List;
 @RequestMapping("crud")
 public class CrudController {
 
+    @Autowired
+    private CrudService crudService;
+
     @PostMapping("/{table_logic_name}")
-    public String save(@PathVariable("table_logic_name") String tableLogicName,
-                       @RequestBody JSONObject jsonObject) {
-        return null;
+    public ResultBean<String> save(@PathVariable("table_logic_name") String tableLogicName,
+                           @RequestBody JSONObject jsonObject) {
+        return crudService.save(tableLogicName, jsonObject);
     }
 
     @PutMapping("/{table_logic_name}")
     public String update(@PathVariable("table_logic_name") String tableLogicName,
                          @RequestBody JSONObject jsonObject) {
-        return null;
+        return crudService.update(tableLogicName, jsonObject);
     }
 
     @PostMapping("/{table_logic_name}/page")
@@ -31,7 +37,7 @@ public class CrudController {
     @DeleteMapping("/{table_logic_name}")
     public String delete(@PathVariable("table_logic_name") String tableLogicName,
                          @RequestBody List<Long> ids) {
-        return null;
+        return crudService.delete(tableLogicName, ids);
     }
 
 }
