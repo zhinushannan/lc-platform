@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.zhinushannan.lcplatformback.mapper.CrudMapper">
+
+    <insert id="save">
+        INSERT INTO `${physicsTableName}`
+        <foreach collection="fields" index="index" item="item" open="(" separator=", " close=")">
+            `${item}`
+        </foreach>
+        VALUES
+        <foreach collection="values" index="index" item="item" open="(" separator=", " close=")">
+            #{item}
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE `${physicsTableName}` SET
+        <foreach collection="values.entrySet()" index="key" item="value" separator=", ">
+            `${key}` = #{value}
+        </foreach>
+        WHERE `id` = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM `${physicsTableName}` WHERE `id` in
+        <foreach collection="ids" item="item" separator=", " open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>
