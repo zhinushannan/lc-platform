@@ -9,10 +9,12 @@ import io.github.zhinushannan.lcplatformback.dto.req.TableInfoReq;
 import io.github.zhinushannan.lcplatformback.entity.FieldMetaInfo;
 import io.github.zhinushannan.lcplatformback.entity.TableMetaInfo;
 import io.github.zhinushannan.lcplatformback.exception.CreateBusinessException;
+import io.github.zhinushannan.lcplatformback.lock.LockManager;
 import io.github.zhinushannan.lcplatformback.mapper.CreateBusinessMapper;
 import io.github.zhinushannan.lcplatformback.service.CreateBusinessService;
 import io.github.zhinushannan.lcplatformback.service.FieldMetaInfoService;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
+import io.github.zhinushannan.lcplatformback.system.Cache;
 import io.github.zhinushannan.lcplatformback.system.SystemConstant;
 import io.github.zhinushannan.lcplatformback.system.SystemInitialization;
 import io.github.zhinushannan.lcplatformback.util.DBConvert;
@@ -41,7 +43,6 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
 
     @Override
     public ResultBean<String> saveTableInfo(TableInfoReq req) {
-        synchronized (this) {
             systemInitialization.refreshCache();
 
             // 组装 TableMetaInfo
@@ -89,8 +90,8 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
             fieldMetaInfoService.saveBatch(fieldMetaInfos);
 
             systemInitialization.refreshCache();
+
             return ResultBean.success();
-        }
     }
 
     @Override

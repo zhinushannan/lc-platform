@@ -3,6 +3,7 @@ package io.github.zhinushannan.lcplatformback.controller;
 import io.github.zhinushannan.lcplatformback.bean.ResultBean;
 import io.github.zhinushannan.lcplatformback.dto.req.SelectEnableFieldsReq;
 import io.github.zhinushannan.lcplatformback.dto.req.TableInfoReq;
+import io.github.zhinushannan.lcplatformback.lock.LockManager;
 import io.github.zhinushannan.lcplatformback.service.CreateBusinessService;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * todo 1、字段名唯一性校验
- * todo 2、锁机制优化
+ * done 2、锁机制优化
  * todo 3、缓存优化
  */
 @RestController
@@ -44,7 +45,15 @@ public class CreateBusinessController {
      */
     @PostMapping("save-table-info")
     public ResultBean<String> saveTableInfo(@RequestBody TableInfoReq req) {
-        return createBusinessService.saveTableInfo(req);
+        String lockStr = "tableLogicName:" + req.getTableInfo().getTableLogicName();
+        boolean lock = LockManager.lock(lockStr);
+        if (lock) {
+            ResultBean<String> resultBean = createBusinessService.saveTableInfo(req);
+            LockManager.unlock(lockStr);
+            return resultBean;
+        } else {
+            return ResultBean.error("当前正在有人操作该表，请稍后重试！");
+        }
     }
 
     /**
@@ -52,7 +61,15 @@ public class CreateBusinessController {
      */
     @PostMapping("select-show-field")
     public ResultBean<String> selectShowFields(@RequestBody SelectEnableFieldsReq req) {
-        return createBusinessService.selectShowFields(req);
+        String lockStr = "tableLogicName:" + req.getTableId();
+        boolean lock = LockManager.lock(lockStr);
+        if (lock) {
+            ResultBean<String> resultBean = createBusinessService.selectShowFields(req);
+            LockManager.unlock(lockStr);
+            return resultBean;
+        } else {
+            return ResultBean.error("当前正在有人操作该表，请稍后重试！");
+        }
     }
 
     /**
@@ -60,7 +77,15 @@ public class CreateBusinessController {
      */
     @PostMapping("select-search-field")
     public ResultBean<String> selectSearchFields(@RequestBody SelectEnableFieldsReq req) {
-        return createBusinessService.selectSearchFields(req);
+        String lockStr = "tableLogicName:" + req.getTableId();
+        boolean lock = LockManager.lock(lockStr);
+        if (lock) {
+            ResultBean<String> resultBean = createBusinessService.selectSearchFields(req);
+            LockManager.unlock(lockStr);
+            return resultBean;
+        } else {
+            return ResultBean.error("当前正在有人操作该表，请稍后重试！");
+        }
     }
 
     /**
@@ -68,7 +93,15 @@ public class CreateBusinessController {
      */
     @GetMapping("create-physics-table")
     public ResultBean<String> createPhysicsTable(@RequestParam("tableId") Long tableId) {
-        return createBusinessService.createPhysicsTable(tableId);
+        String lockStr = "tableLogicName:" + tableId;
+        boolean lock = LockManager.lock(lockStr);
+        if (lock) {
+            ResultBean<String> resultBean = createBusinessService.createPhysicsTable(tableId);
+            LockManager.unlock(lockStr);
+            return resultBean;
+        } else {
+            return ResultBean.error("当前正在有人操作该表，请稍后重试！");
+        }
     }
 
 }
