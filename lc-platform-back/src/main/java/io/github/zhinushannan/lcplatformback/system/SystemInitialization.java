@@ -39,6 +39,8 @@ public class SystemInitialization implements InitializingBean {
             log.info(" =====> 刷新表缓存 开始 ");
             List<TableMetaInfo> tableMetaInfos = tableMetaInfoService.list();
             Cache.TABLE_META_INFO_MAP = tableMetaInfos.stream().collect(Collectors.toMap(TableMetaInfo::getLogicTableName, t -> t));
+            Cache.TABLE_LOGIC_NAME = tableMetaInfos.stream().map(TableMetaInfo::getLogicTableName).collect(Collectors.toList());
+            Cache.TABLE_BUSINESS_NAME = tableMetaInfos.stream().map(TableMetaInfo::getBusinessTableName).collect(Collectors.toList());
             log.info(" =====> 刷新表缓存 结束 ");
 
             log.info(" =====> 刷新字段缓存 开始 ");
