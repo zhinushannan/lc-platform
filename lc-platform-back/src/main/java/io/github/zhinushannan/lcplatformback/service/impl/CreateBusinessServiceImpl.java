@@ -1,8 +1,10 @@
 package io.github.zhinushannan.lcplatformback.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.github.zhinushannan.lcplatformback.bean.BaseEntity;
 import io.github.zhinushannan.lcplatformback.bean.ResultBean;
 import io.github.zhinushannan.lcplatformback.constant.MySQLTypeEnum;
+import io.github.zhinushannan.lcplatformback.dto.req.SelectShowFieldsReq;
 import io.github.zhinushannan.lcplatformback.dto.req.TableInfoReq;
 import io.github.zhinushannan.lcplatformback.entity.FieldMetaInfo;
 import io.github.zhinushannan.lcplatformback.entity.TableMetaInfo;
@@ -11,6 +13,7 @@ import io.github.zhinushannan.lcplatformback.mapper.CreateBusinessMapper;
 import io.github.zhinushannan.lcplatformback.service.CreateBusinessService;
 import io.github.zhinushannan.lcplatformback.service.FieldMetaInfoService;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
+import io.github.zhinushannan.lcplatformback.system.Cache;
 import io.github.zhinushannan.lcplatformback.system.SystemConstant;
 import io.github.zhinushannan.lcplatformback.system.SystemInitialization;
 import io.github.zhinushannan.lcplatformback.util.DBConvert;
@@ -18,7 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class CreateBusinessServiceImpl implements CreateBusinessService {
@@ -125,5 +132,30 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
         // todo CreateBusinessDto.PageInfo pageInfo = dto.getPageInfo();
 
         return null;
+    }
+
+    @Override
+    public ResultBean<String> selectShowFields(SelectShowFieldsReq req) {
+        Long tableId = req.getTableId();
+        TableMetaInfo tableMetaInfo = tableMetaInfoService.getById(tableId);
+        if (tableMetaInfo == null) {
+            return ResultBean.notFound("表不存在！");
+        }
+        List<FieldMetaInfo> fieldMetaInfos = fieldMetaInfoService.list(new QueryWrapper<FieldMetaInfo>().in("table_meta_info_id"));
+
+        List<Long> fieldIdsDb = fieldMetaInfos.stream().map(BaseEntity::getId).collect(Collectors.toList());
+
+        List<Long> fieldIds = req.getFieldIds();
+        if (new HashSet<>(fieldIdsDb).containsAll(fieldIds)) {
+            return ResultBean.notFound("字段选择有误！");
+        }
+
+        List<FieldMetaInfo> result = fieldMetaInfos.stream()
+                .filter(fieldMetaInfo -> fieldIds.contains(fieldMetaInfo.getId()))
+                .peek(fieldMetaInfo -> fieldMetaInfo.setEnableShow(true))
+                .collect(Collectors.toList());
+        fieldMetaInfoService.updateBatchById(result);
+
+        return ResultBean.success();
     }
 }
