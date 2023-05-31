@@ -47,6 +47,7 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
                     .physicsTableSerial(SystemConstant.getNextLogicTableNameSerial())
                     .logicTableName(tableInfo.getTableLogicName())
                     .businessTableName(tableInfo.getTableBusinessName())
+                    .hasCreated(false)
                     .build();
 
             Integer logicCode = tableMetaInfoService.checkTableLogic(tableMetaInfo.getLogicTableName()).getCode();
