@@ -9,5 +9,7 @@ public class SelectEnableFieldsReq {
 
     private Long tableId;
 
+    private String tableLogicName;
+
     private List<Long> fieldIds;
 }

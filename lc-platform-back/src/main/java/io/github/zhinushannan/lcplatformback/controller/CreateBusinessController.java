@@ -45,15 +45,7 @@ public class CreateBusinessController {
      */
     @PostMapping("save-table-info")
     public ResultBean<String> saveTableInfo(@RequestBody TableInfoReq req) {
-        String lockStr = "tableLogicName:" + req.getTableInfo().getTableLogicName();
-        boolean lock = LockManager.lock(lockStr);
-        if (lock) {
-            ResultBean<String> resultBean = createBusinessService.saveTableInfo(req);
-            LockManager.unlock(lockStr);
-            return resultBean;
-        } else {
-            return ResultBean.error("当前正在有人操作该表，请稍后重试！");
-        }
+        return exec("save", req.getTableInfo().getTableLogicName(), req, null, null);
     }
 
     /**
@@ -61,15 +53,7 @@ public class CreateBusinessController {
      */
     @PostMapping("select-show-field")
     public ResultBean<String> selectShowFields(@RequestBody SelectEnableFieldsReq req) {
-        String lockStr = "tableLogicName:" + req.getTableId();
-        boolean lock = LockManager.lock(lockStr);
-        if (lock) {
-            ResultBean<String> resultBean = createBusinessService.selectShowFields(req);
-            LockManager.unlock(lockStr);
-            return resultBean;
-        } else {
-            return ResultBean.error("当前正在有人操作该表，请稍后重试！");
-        }
+        return exec("show", req.getTableLogicName(), null, req, null);
     }
 
     /**
@@ -77,28 +61,41 @@ public class CreateBusinessController {
      */
     @PostMapping("select-search-field")
     public ResultBean<String> selectSearchFields(@RequestBody SelectEnableFieldsReq req) {
-        String lockStr = "tableLogicName:" + req.getTableId();
-        boolean lock = LockManager.lock(lockStr);
-        if (lock) {
-            ResultBean<String> resultBean = createBusinessService.selectSearchFields(req);
-            LockManager.unlock(lockStr);
-            return resultBean;
-        } else {
-            return ResultBean.error("当前正在有人操作该表，请稍后重试！");
-        }
+        return exec("search", req.getTableLogicName(), null, req, null);
     }
 
     /**
      * 创建物理表
      */
     @GetMapping("create-physics-table")
-    public ResultBean<String> createPhysicsTable(@RequestParam("tableId") Long tableId) {
-        String lockStr = "tableLogicName:" + tableId;
+    public ResultBean<String> createPhysicsTable(@RequestParam("tableId") Long tableId,
+                                                 @RequestParam("tableLogicName") String tableLogicName) {
+        return exec("create", tableLogicName, null, null, tableId);
+    }
+
+
+    private ResultBean<String> exec(String operate, String tableLogicName, TableInfoReq tableInfoReq, SelectEnableFieldsReq req, Long tableId) {
+        String lockStr = "tableLogicName:" + tableLogicName;
         boolean lock = LockManager.lock(lockStr);
         if (lock) {
-            ResultBean<String> resultBean = createBusinessService.createPhysicsTable(tableId);
-            LockManager.unlock(lockStr);
-            return resultBean;
+            try {
+                switch (operate) {
+                    case "save":
+                        return createBusinessService.saveTableInfo(tableInfoReq);
+                    case "show":
+                        return createBusinessService.selectShowFields(req);
+                    case "search":
+                        return createBusinessService.selectSearchFields(req);
+                    case "create":
+                        return createBusinessService.createPhysicsTable(tableId);
+                    default:
+                        return null;
+                }
+            } catch (Exception e) {
+                return ResultBean.error(e.getMessage());
+            } finally {
+                LockManager.unlock(lockStr);
+            }
         } else {
             return ResultBean.error("当前正在有人操作该表，请稍后重试！");
         }
