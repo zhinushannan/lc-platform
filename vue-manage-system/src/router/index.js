@@ -15,6 +15,11 @@ export default new Router({
             meta: { title: '自述文件' },
             children: [
                 {
+                    path: '/business/manage',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/Manage/Index.vue'),
+                    meta: { title: '服务管理' }
+                },
+                {
                     path: '/business/create-business',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/CreateBusiness/Index.vue'),
                     meta: { title: '创建服务' }

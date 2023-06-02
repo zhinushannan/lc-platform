@@ -5,7 +5,10 @@ export default {
     components: {ChoiceShowField},
     data() {
         return {
-            tableId: '1664625675123101697'
+            tableId: this.$route.query.tableId
         }
+    },
+    created() {
+        this.tableId = this.$route.query.tableId
     }
 }
