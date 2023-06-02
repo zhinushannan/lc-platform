@@ -20,6 +20,11 @@ export default new Router({
                     meta: { title: '服务管理' }
                 },
                 {
+                    path: '/business/bind',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/PathBind/Index.vue'),
+                    meta: { title: '服务绑定' }
+                },
+                {
                     path: '/business/create-business',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/CreateBusiness/Index.vue'),
                     meta: { title: '创建服务' }
