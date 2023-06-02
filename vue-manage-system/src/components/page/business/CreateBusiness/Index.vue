@@ -24,11 +24,11 @@
       <div v-if="active === 0" style="width: 80%; margin: auto">
         <el-form ref="metaInfoForm" :model="metaInfo" label-width="100px" :rules="metaInfoRule">
           <el-divider>表信息</el-divider>
-          <el-form-item label="表逻辑名称" prop="tableInfo.logicName">
-            <el-input v-model="metaInfo.tableInfo.logicName" placeholder="请输入表逻辑名称，纯英文字符"></el-input>
+          <el-form-item label="表逻辑名称" prop="tableInfo.tableLogicName">
+            <el-input v-model="metaInfo.tableInfo.tableLogicName" placeholder="请输入表逻辑名称，纯英文字符"></el-input>
           </el-form-item>
-          <el-form-item label="表业务名称" prop="tableInfo.businessName">
-            <el-input v-model="metaInfo.tableInfo.businessName" placeholder="请输入表业务名称"></el-input>
+          <el-form-item label="表业务名称" prop="tableInfo.tableBusinessName">
+            <el-input v-model="metaInfo.tableInfo.tableBusinessName" placeholder="请输入表业务名称"></el-input>
           </el-form-item>
 
           <div v-for="(item, index) in metaInfo.fieldInfos">

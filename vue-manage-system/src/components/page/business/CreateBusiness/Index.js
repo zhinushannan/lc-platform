@@ -13,7 +13,7 @@ export default {
                 return callback(new Error('表逻辑名不能为空'));
             }
             request({
-                url: `/create-business/check-table-logic?logicName=${this.metaInfo.tableInfo.logicName}`,
+                url: `/create-business/check-table-logic?logicName=${this.metaInfo.tableInfo.tableLogicName}`,
                 method: 'get'
             }).then((resp) => {
                 if (resp.code !== 200) {
@@ -28,7 +28,7 @@ export default {
                 return callback(new Error('表业务名不能为空'));
             }
             request({
-                url: `/create-business/check-table-logic?logicName=${this.metaInfo.tableInfo.businessName}`,
+                url: `/create-business/check-table-logic?logicName=${this.metaInfo.tableInfo.tableBusinessName}`,
                 method: 'get'
             }).then((resp) => {
                 if (resp.code !== 200) {
@@ -44,8 +44,8 @@ export default {
             fieldInfoCount: 1,
             metaInfo: {
                 tableInfo: {
-                    logicName: '',
-                    businessName: ''
+                    tableLogicName: '',
+                    tableBusinessName: ''
                 },
                 fieldInfos: [
                     {
@@ -59,10 +59,10 @@ export default {
             },
             metaInfoRule: {
                 tableInfo: {
-                    logicName: [
+                    tableLogicName: [
                         {validator: checkTableLogicName, trigger: 'blur'}
                     ],
-                    businessName: [
+                    tableBusinessName: [
                         {validator: checkTableBusinessName, trigger: 'blur'}
                     ]
                 }
@@ -86,21 +86,21 @@ export default {
                 // todo 保存 表 和 字段信息
                 this.fullscreenLoading = true;
 
-                console.log(this.metaInfo)
 
                 this.fullscreenLoading = false;
 
-                // request({
-                //     url: '/create-business/save-table-info',
-                //     method: 'post',
-                //     data: this.metaInfo
-                // }).then((resp) => {
-                //     console.log(resp)
-                //     // if (tmp >= 0 && tmp <= 3) {
-                //     //     this.active = tmp
-                //     // }
-                //     this.fullscreenLoading = false;
-                // })
+                request({
+                    url: '/create-business/save-table-info',
+                    method: 'post',
+                    data: this.metaInfo
+                }).then((resp) => {
+                    console.log(this.metaInfo)
+                    console.log(resp)
+                    // if (tmp >= 0 && tmp <= 3) {
+                    //     this.active = tmp
+                    // }
+                    this.fullscreenLoading = false;
+                })
             }
         },
         finish() {

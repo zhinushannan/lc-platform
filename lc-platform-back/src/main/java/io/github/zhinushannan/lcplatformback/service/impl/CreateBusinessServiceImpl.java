@@ -83,6 +83,8 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
                                         null
                         )
                         .nullable(fieldInfo.getNullable())
+                        .enableShow(Boolean.FALSE)
+                        .enableSearch(Boolean.FALSE)
                         .build();
                 fieldMetaInfos.add(fieldMetaInfo);
             }
