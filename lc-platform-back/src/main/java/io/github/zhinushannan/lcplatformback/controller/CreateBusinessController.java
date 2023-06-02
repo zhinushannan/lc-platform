@@ -6,6 +6,7 @@ import io.github.zhinushannan.lcplatformback.dto.req.TableInfoReq;
 import io.github.zhinushannan.lcplatformback.lock.LockManager;
 import io.github.zhinushannan.lcplatformback.service.CreateBusinessService;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
+import io.github.zhinushannan.lcplatformback.system.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +54,7 @@ public class CreateBusinessController {
      */
     @PostMapping("select-show-field")
     public ResultBean<String> selectShowFields(@RequestBody SelectEnableFieldsReq req) {
-        return exec("show", req.getTableLogicName(), null, req, null);
+        return exec("show", null, null, req, req.getTableId());
     }
 
     /**
@@ -61,20 +62,23 @@ public class CreateBusinessController {
      */
     @PostMapping("select-search-field")
     public ResultBean<String> selectSearchFields(@RequestBody SelectEnableFieldsReq req) {
-        return exec("search", req.getTableLogicName(), null, req, null);
+        return exec("search", null, null, req, req.getTableId());
     }
 
     /**
      * 创建物理表
      */
     @GetMapping("create-physics-table")
-    public ResultBean<String> createPhysicsTable(@RequestParam("tableId") Long tableId,
-                                                 @RequestParam("tableLogicName") String tableLogicName) {
-        return exec("create", tableLogicName, null, null, tableId);
+    public ResultBean<String> createPhysicsTable(@RequestParam("tableId") Long tableId) {
+        return exec("create", null, null, null, tableId);
     }
 
 
+    // todo 可能存在bug，需要二次回顾
     private ResultBean<String> exec(String operate, String tableLogicName, TableInfoReq tableInfoReq, SelectEnableFieldsReq req, Long tableId) {
+        if (tableLogicName == null) {
+            tableLogicName = Cache.getTableMetaInfoByTableId(tableId).getLogicTableName();
+        }
         String lockStr = "tableLogicName:" + tableLogicName;
         boolean lock = LockManager.lock(lockStr);
         if (lock) {

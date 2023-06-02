@@ -47,7 +47,7 @@ public class FieldMetaInfo extends BaseEntity {
     @TableField("enable_show")
     private Boolean enableShow;
 
-    @TableField("enable_search")
-    private Boolean enableSearch;
+    @TableField("search_mode")
+    private Integer searchMode;
 
 }

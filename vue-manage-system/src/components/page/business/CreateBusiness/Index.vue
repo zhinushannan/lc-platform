@@ -16,7 +16,7 @@
     <div class="container">
       <el-steps :active="active" finish-status="success" align-center>
         <el-step title="创建数据逻辑" description="创建数据库表和业务名称的对应关系"></el-step>
-        <el-step title="选择可见字段" description="您想要在前端展示的字段"></el-step>
+        <el-step title="选择可见和搜索字段" description="您想要在前端展示的字段、希望支持搜索的字段"></el-step>
         <el-step title="选择搜索字段" description="选择您希望支持搜索的字段"></el-step>
       </el-steps>
 
@@ -36,7 +36,7 @@
               <el-link @click="removeField(index)">(点击删除)</el-link>
             </el-divider>
 
-            <FieldComponent :item="item" :db-type="dbType" />
+            <FieldComponent :item="item" :db-type="dbType"/>
 
           </div>
 
@@ -46,8 +46,8 @@
       </div>
 
       <!-- 选择可见字段 -->
-      <div v-if="active === 1">
-        选择可见字段
+      <div v-if="active === 1" style="width: 80%; margin: 20px auto auto;">
+        <ChoiceShowField :table-id="tableId"/>
       </div>
 
       <!-- 选择搜索字段 -->

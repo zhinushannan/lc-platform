@@ -1,9 +1,9 @@
 package io.github.zhinushannan.lcplatformback.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import io.github.zhinushannan.lcplatformback.bean.BaseEntity;
 import io.github.zhinushannan.lcplatformback.bean.ResultBean;
 import io.github.zhinushannan.lcplatformback.constant.MySQLTypeEnum;
+import io.github.zhinushannan.lcplatformback.constant.SelectModeEnum;
 import io.github.zhinushannan.lcplatformback.dto.req.SelectEnableFieldsReq;
 import io.github.zhinushannan.lcplatformback.dto.req.TableInfoReq;
 import io.github.zhinushannan.lcplatformback.entity.FieldMetaInfo;
@@ -98,7 +98,7 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
                     )
                     .nullable(fieldInfo.getNullable())
                     .enableShow(Boolean.FALSE)
-                    .enableSearch(Boolean.FALSE)
+                    .searchMode(SelectModeEnum.DISABLE.getValue())
                     .build();
             fieldMetaInfos.add(fieldMetaInfo);
         }
@@ -112,29 +112,17 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
 
     @Override
     public ResultBean<String> selectShowFields(SelectEnableFieldsReq req) {
-        List<FieldMetaInfo> fieldMetaInfos = checkEnable(req);
-        List<Long> fieldIds = req.getFieldIds();
-
-        List<FieldMetaInfo> result = fieldMetaInfos.stream()
-                .filter(fieldMetaInfo -> fieldIds.contains(fieldMetaInfo.getId()))
-                .peek(fieldMetaInfo -> fieldMetaInfo.setEnableShow(true))
-                .collect(Collectors.toList());
-        fieldMetaInfoService.updateBatchById(result);
-
+        FieldMetaInfo fieldMetaInfo = checkEnable(req);
+        fieldMetaInfo.setEnableShow(req.getShowEnable());
+        fieldMetaInfoService.updateById(fieldMetaInfo);
         return ResultBean.success();
     }
 
     @Override
     public ResultBean<String> selectSearchFields(SelectEnableFieldsReq req) {
-        List<FieldMetaInfo> fieldMetaInfos = checkEnable(req);
-        List<Long> fieldIds = req.getFieldIds();
-
-        List<FieldMetaInfo> result = fieldMetaInfos.stream()
-                .filter(fieldMetaInfo -> fieldIds.contains(fieldMetaInfo.getId()))
-                .peek(fieldMetaInfo -> fieldMetaInfo.setEnableSearch(true))
-                .collect(Collectors.toList());
-        fieldMetaInfoService.updateBatchById(result);
-
+        FieldMetaInfo fieldMetaInfo = checkEnable(req);
+        fieldMetaInfo.setSearchMode(SelectModeEnum.getLabelByValue(req.getSelectMode()).getValue());
+        fieldMetaInfoService.updateById(fieldMetaInfo);
         return ResultBean.success();
     }
 
@@ -185,22 +173,20 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
     /**
      * 校验开启展示和搜索的合法性
      */
-    private List<FieldMetaInfo> checkEnable(SelectEnableFieldsReq req) {
+    private FieldMetaInfo checkEnable(SelectEnableFieldsReq req) {
         Long tableId = req.getTableId();
         TableMetaInfo tableMetaInfo = tableMetaInfoService.getById(tableId);
         if (tableMetaInfo == null) {
             throw CreateBusinessException.TABLE_NOTFOUND;
         }
-        List<FieldMetaInfo> fieldMetaInfos = fieldMetaInfoService.list(new QueryWrapper<FieldMetaInfo>().in("table_meta_info_id"));
 
-        List<Long> fieldIdsDb = fieldMetaInfos.stream().map(BaseEntity::getId).collect(Collectors.toList());
+        FieldMetaInfo fieldMetaInfo = fieldMetaInfoService.getById(req.getFieldId());
 
-        List<Long> fieldIds = req.getFieldIds();
-        if (new HashSet<>(fieldIdsDb).containsAll(fieldIds)) {
+        if (null == fieldMetaInfo) {
             throw CreateBusinessException.FIELD_ERROR;
         }
 
-        return fieldMetaInfos;
+        return fieldMetaInfo;
     }
 
 }

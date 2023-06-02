@@ -1,11 +1,13 @@
 import request from "@/utils/request";
 import FieldComponent from "@/components/components/business/CreateBusiness/FieldComponent.vue";
+import ChoiceShowField from "@/components/components/business/CreateBusiness/ChoiceShowField.vue";
 
 export default {
     name: "Index",
-    components: {FieldComponent},
+    components: {ChoiceShowField, FieldComponent},
     comments: {
-        FieldComponent
+        FieldComponent,
+        ChoiceShowField
     },
     data() {
         const checkTableLogicName = (rule, value, callback) => {
@@ -67,7 +69,7 @@ export default {
                     ]
                 }
             },
-            tableId: '',
+            tableId: '1664525800188452866',
             fullscreenLoading: false
         }
     },
