@@ -40,7 +40,7 @@ export default {
         }
         return {
             dbType: [],
-            active: 0,
+            active: 1,
             fieldInfoCount: 1,
             metaInfo: {
                 tableInfo: {
@@ -67,6 +67,7 @@ export default {
                     ]
                 }
             },
+            tableId: '',
             fullscreenLoading: false
         }
     },
@@ -126,9 +127,6 @@ export default {
                 }
                 if (message !== "") {
                     message = message.substring(0, message.length - 2)
-
-                    console.log(message)
-
                     this.$message({
                         dangerouslyUseHTMLString: true,
                         message: message,
@@ -139,21 +137,19 @@ export default {
                     return
                 }
 
-
-                // 字段 长度 合法校验
-
-                // request({
-                //     url: '/create-business/save-table-info',
-                //     method: 'post',
-                //     data: this.metaInfo
-                // }).then((resp) => {
-                //     console.log(this.metaInfo)
-                //     console.log(resp)
-                //     // if (tmp >= 0 && tmp <= 3) {
-                //     //     this.active = tmp
-                //     // }
-                //     this.fullscreenLoading = false;
-                // })
+                request({
+                    url: '/create-business/save-table-info',
+                    method: 'post',
+                    data: this.metaInfo
+                }).then((resp) => {
+                    if (resp.code === 200) {
+                        if (tmp >= 0 && tmp <= 3) {
+                            this.active = tmp
+                        }
+                    }
+                    this.tableId = resp.data
+                    this.fullscreenLoading = false;
+                })
             }
         },
         finish() {

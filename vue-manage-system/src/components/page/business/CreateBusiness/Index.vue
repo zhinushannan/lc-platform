@@ -38,31 +38,6 @@
 
             <FieldComponent :item="item" :db-type="dbType" />
 
-<!--            <el-form-item label="逻辑字段名称" prop="fieldInfos[index].fieldLogicName">-->
-<!--              <el-input v-model="item.fieldLogicName" placeholder="请输入字段的逻辑名称，纯英文字符"></el-input>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="业务字段名称" prop="fieldInfos[index].fieldBusinessName">-->
-<!--              <el-input v-model="item.fieldBusinessName" placeholder="请输入字段的业务名称"></el-input>-->
-<!--            </el-form-item>-->
-
-<!--            <el-form-item label="字段类型" prop="fieldInfos[index].fieldJdbcType">-->
-<!--              <el-select v-model="item.fieldJdbcType" placeholder="请选择字段类型" @change="onDbTypeChange(item)">-->
-<!--                <el-option-->
-<!--                    v-for="type in dbType"-->
-<!--                    :key="type.jdbcType"-->
-<!--                    :label="type.jdbcType"-->
-<!--                    :value="type.jdbcType">-->
-<!--                </el-option>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="字段长度">-->
-<!--              <el-input v-model="item.fieldJdbcLength" placeholder="请填写字段长度，若不填则使用默认长度"></el-input>-->
-<!--            </el-form-item>-->
-
-<!--            <el-form-item label="是否允许为空" prop="fieldInfos[index].nullable">-->
-<!--              <el-radio v-model="item.nullable" label="true">是</el-radio>-->
-<!--              <el-radio v-model="item.nullable" label="false">否</el-radio>-->
-<!--            </el-form-item>-->
           </div>
 
 

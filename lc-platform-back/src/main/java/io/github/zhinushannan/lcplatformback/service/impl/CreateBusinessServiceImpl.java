@@ -107,7 +107,7 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
 
         systemInitialization.refreshCache();
 
-        return ResultBean.success();
+        return ResultBean.success(tableMetaInfo.getId().toString());
     }
 
     @Override
