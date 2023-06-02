@@ -83,24 +83,77 @@ export default {
         jump(step) {
             let tmp = this.active + step
             if (tmp === 1) {
-                // todo 保存 表 和 字段信息
-                this.fullscreenLoading = true;
+                // this.fullscreenLoading = true;
+
+                let message = ""
+
+                let fields = this.metaInfo.fieldInfos
+                // 字段 逻辑名 重复校验
+                let logicName = {}
+                for (let i in fields) {
+                    if (!logicName[fields[i]['fieldLogicName']]) {
+                        logicName[fields[i]['fieldLogicName']] = 0
+                    }
+                    logicName[fields[i]['fieldLogicName']]++
+                }
+                for (let i in logicName) {
+                    if (logicName[i] > 1) {
+                        if (message === "") {
+                            message = "存在重复字段逻辑名："
+                        }
+                        message += i + ", "
+                    }
+                }
+                if (message !== "") {
+                    message = message.substring(0, message.length - 2)
+                    message += "<br/><br/>"
+                }
+                // 字段 业务名 重复校验
+                let businessName = {}
+                for (let i in fields) {
+                    if (!businessName[fields[i]['fieldBusinessName']]) {
+                        businessName[fields[i]['fieldBusinessName']] = 0
+                    }
+                    businessName[fields[i]['fieldBusinessName']]++
+                }
+                for (let i in businessName) {
+                    if (businessName[i] > 1) {
+                        if (message.endsWith("<br/><br/>")) {
+                            message += "存在重复字段业务名："
+                        }
+                        message += i + ", "
+                    }
+                }
+                if (message !== "") {
+                    message = message.substring(0, message.length - 2)
+
+                    console.log(message)
+
+                    this.$message({
+                        dangerouslyUseHTMLString: true,
+                        message: message,
+                        type: 'error',
+                        duration: 0,
+                        showClose: true
+                    });
+                    return
+                }
 
 
-                this.fullscreenLoading = false;
+                // 字段 长度 合法校验
 
-                request({
-                    url: '/create-business/save-table-info',
-                    method: 'post',
-                    data: this.metaInfo
-                }).then((resp) => {
-                    console.log(this.metaInfo)
-                    console.log(resp)
-                    // if (tmp >= 0 && tmp <= 3) {
-                    //     this.active = tmp
-                    // }
-                    this.fullscreenLoading = false;
-                })
+                // request({
+                //     url: '/create-business/save-table-info',
+                //     method: 'post',
+                //     data: this.metaInfo
+                // }).then((resp) => {
+                //     console.log(this.metaInfo)
+                //     console.log(resp)
+                //     // if (tmp >= 0 && tmp <= 3) {
+                //     //     this.active = tmp
+                //     // }
+                //     this.fullscreenLoading = false;
+                // })
             }
         },
         finish() {
