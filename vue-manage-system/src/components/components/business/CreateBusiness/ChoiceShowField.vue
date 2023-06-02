@@ -2,16 +2,15 @@
 
   <div>
 
-    <el-card class="box-card" v-for="item in fieldList">
+    <el-card class="box-card" v-for="item in fieldList" style="margin-top: 10px; margin-bottom: 10px;">
       <div slot="header" class="clearfix">
         <span>{{ item['logicFieldName'] }} ({{ item['businessFieldName'] }})</span>
-        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
 
       <div>
 
         <el-form label-position="right" label-width="100px" :model="item">
-          <el-form-item label="名称">
+          <el-form-item label="是否展示">
             <el-switch
                 v-model="item.enableShow"
                 active-text="前端展示"
@@ -20,7 +19,7 @@
             >
             </el-switch>
           </el-form-item>
-          <el-form-item label="活动区域">
+          <el-form-item label="搜索选项">
             <el-select v-model="item.searchMode" placeholder="请选择" @change="searchModeChange(item)">
               <el-option
                   v-for="item in options"

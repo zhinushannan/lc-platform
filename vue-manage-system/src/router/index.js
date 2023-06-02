@@ -20,6 +20,11 @@ export default new Router({
                     meta: { title: '创建服务' }
                 },
                 {
+                    path: '/business/operate-set',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/OperateSet/Index.vue'),
+                    meta: { title: '设置操作选项' }
+                },
+                {
                     path: '/business/create-table',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/CreateTable/Index.vue'),
                     meta: { title: '创建数据表' }

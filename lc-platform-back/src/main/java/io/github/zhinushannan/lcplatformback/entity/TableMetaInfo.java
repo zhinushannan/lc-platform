@@ -32,7 +32,4 @@ public class TableMetaInfo extends BaseEntity {
     @TableField("business_table_name")
     private String businessTableName;
 
-    @TableField("has_created")
-    private Boolean hasCreated;
-
 }
