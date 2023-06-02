@@ -9,12 +9,10 @@ import io.github.zhinushannan.lcplatformback.dto.req.TableInfoReq;
 import io.github.zhinushannan.lcplatformback.entity.FieldMetaInfo;
 import io.github.zhinushannan.lcplatformback.entity.TableMetaInfo;
 import io.github.zhinushannan.lcplatformback.exception.CreateBusinessException;
-import io.github.zhinushannan.lcplatformback.lock.LockManager;
 import io.github.zhinushannan.lcplatformback.mapper.CreateBusinessMapper;
 import io.github.zhinushannan.lcplatformback.service.CreateBusinessService;
 import io.github.zhinushannan.lcplatformback.service.FieldMetaInfoService;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
-import io.github.zhinushannan.lcplatformback.system.Cache;
 import io.github.zhinushannan.lcplatformback.system.SystemConstant;
 import io.github.zhinushannan.lcplatformback.system.SystemInitialization;
 import io.github.zhinushannan.lcplatformback.util.DBConvert;
@@ -43,57 +41,73 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
 
     @Override
     public ResultBean<String> saveTableInfo(TableInfoReq req) {
-            systemInitialization.refreshCache();
+        systemInitialization.refreshCache();
 
-            // 组装 TableMetaInfo
-            TableInfoReq.TableInfo tableInfo = req.getTableInfo();
+        // 1 合法性校验
 
-            TableMetaInfo tableMetaInfo = TableMetaInfo.builder()
-                    .physicsTableSerial(SystemConstant.getNextLogicTableNameSerial())
-                    .logicTableName(tableInfo.getTableLogicName())
-                    .businessTableName(tableInfo.getTableBusinessName())
-                    .hasCreated(false)
+        // 1.1 表逻辑名 和 表业务名
+        Integer logicCode = tableMetaInfoService.checkTableLogic(req.getTableInfo().getTableLogicName()).getCode();
+        Integer businessCode = tableMetaInfoService.checkTableBusiness(req.getTableInfo().getTableBusinessName()).getCode();
+        if (logicCode == 500 || businessCode == 500) {
+            throw CreateBusinessException.TABLE_LOGIC_OR_BUSINESS_REPEAT;
+        }
+
+        // 1.2 字段逻辑名 和 字段业务名
+        List<TableInfoReq.FieldInfo> fieldInfos = req.getFieldInfos();
+        if (fieldInfos == null || fieldInfos.isEmpty()) {
+            throw CreateBusinessException.FIELD_NULL;
+        }
+        List<String> fieldBusinessName = fieldInfos.stream().map(TableInfoReq.FieldInfo::getFieldBusinessName).collect(Collectors.toList());
+        if (fieldBusinessName.size() != new HashSet<>(fieldBusinessName).size()) {
+            throw CreateBusinessException.FIELD_BUSINESS_REPEAT;
+        }
+
+        List<String> fieldLogicName = fieldInfos.stream().map(TableInfoReq.FieldInfo::getFieldLogicName).collect(Collectors.toList());
+        if (fieldLogicName.size() != new HashSet<>(fieldLogicName).size()) {
+            throw CreateBusinessException.FIELD_LOGIC_REPEAT;
+        }
+
+        // 组装 TableMetaInfo
+        TableInfoReq.TableInfo tableInfo = req.getTableInfo();
+
+        TableMetaInfo tableMetaInfo = TableMetaInfo.builder()
+                .physicsTableSerial(SystemConstant.getNextLogicTableNameSerial())
+                .logicTableName(tableInfo.getTableLogicName())
+                .businessTableName(tableInfo.getTableBusinessName())
+                .hasCreated(false)
+                .build();
+
+        tableMetaInfoService.save(tableMetaInfo);
+
+        // 组装 FieldInfo 列表
+        int fieldSerial = 0;
+        List<FieldMetaInfo> fieldMetaInfos = new ArrayList<>();
+        for (TableInfoReq.FieldInfo fieldInfo : fieldInfos) {
+            MySQLTypeEnum mysqlType = MySQLTypeEnum.getByJdbcType(fieldInfo.getFieldJdbcType());
+
+            FieldMetaInfo fieldMetaInfo = FieldMetaInfo.builder()
+                    .physicsFieldSerial(fieldSerial++)
+                    .logicFieldName(fieldInfo.getFieldLogicName())
+                    .businessFieldName(fieldInfo.getFieldBusinessName())
+                    .tableMetaInfoId(tableMetaInfo.getId())
+                    .fieldType(mysqlType.getJdbcType())
+                    .fieldLength(
+                            mysqlType.getNeedLength() ?
+                                    fieldInfo.getFieldJdbcLength() != null && fieldInfo.getFieldJdbcLength() > 0 ? fieldInfo.getFieldJdbcLength() : mysqlType.getDefaultLength() :
+                                    null
+                    )
+                    .nullable(fieldInfo.getNullable())
+                    .enableShow(Boolean.FALSE)
+                    .enableSearch(Boolean.FALSE)
                     .build();
+            fieldMetaInfos.add(fieldMetaInfo);
+        }
 
-            Integer logicCode = tableMetaInfoService.checkTableLogic(tableMetaInfo.getLogicTableName()).getCode();
-            Integer businessCode = tableMetaInfoService.checkTableBusiness(tableInfo.getTableBusinessName()).getCode();
-            if (logicCode == 500 || businessCode == 500) {
-                throw CreateBusinessException.TABLE_LOGIC_OR_BUSINESS_REPEAT;
-            }
+        fieldMetaInfoService.saveBatch(fieldMetaInfos);
 
-            tableMetaInfoService.save(tableMetaInfo);
+        systemInitialization.refreshCache();
 
-            // 组装 FieldInfo 列表
-            List<TableInfoReq.FieldInfo> fieldInfos = req.getFieldInfos();
-
-            int fieldSerial = 0;
-            List<FieldMetaInfo> fieldMetaInfos = new ArrayList<>();
-            for (TableInfoReq.FieldInfo fieldInfo : fieldInfos) {
-                MySQLTypeEnum mysqlType = MySQLTypeEnum.getByJdbcType(fieldInfo.getFieldJdbcType());
-
-                FieldMetaInfo fieldMetaInfo = FieldMetaInfo.builder()
-                        .physicsFieldSerial(fieldSerial++)
-                        .logicFieldName(fieldInfo.getFieldLogicName())
-                        .businessFieldName(fieldInfo.getFieldBusinessName())
-                        .tableMetaInfoId(tableMetaInfo.getId())
-                        .fieldType(mysqlType.getJdbcType())
-                        .fieldLength(
-                                mysqlType.getNeedLength() ?
-                                        fieldInfo.getFieldJdbcLength() != null && fieldInfo.getFieldJdbcLength() > 0 ? fieldInfo.getFieldJdbcLength() : mysqlType.getDefaultLength() :
-                                        null
-                        )
-                        .nullable(fieldInfo.getNullable())
-                        .enableShow(Boolean.FALSE)
-                        .enableSearch(Boolean.FALSE)
-                        .build();
-                fieldMetaInfos.add(fieldMetaInfo);
-            }
-
-            fieldMetaInfoService.saveBatch(fieldMetaInfos);
-
-            systemInitialization.refreshCache();
-
-            return ResultBean.success();
+        return ResultBean.success();
     }
 
     @Override
