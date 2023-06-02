@@ -16,7 +16,7 @@ export default new Router({
             children: [
                 {
                     path: '/business/create-business',
-                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/CreateBusiness.vue'),
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/CreateBusiness/Index.vue'),
                     meta: { title: '创建服务' }
                 },
                 {
