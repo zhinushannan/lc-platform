@@ -105,6 +105,9 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
 
         fieldMetaInfoService.saveBatch(fieldMetaInfos);
 
+
+        this.createPhysicsTable(tableMetaInfo.getId());
+
         systemInitialization.refreshCache();
 
         return ResultBean.success(tableMetaInfo.getId().toString());
@@ -126,8 +129,7 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
         return ResultBean.success();
     }
 
-    @Override
-    public ResultBean<String> createPhysicsTable(Long tableId) {
+    private ResultBean<String> createPhysicsTable(Long tableId) {
 
         synchronized (this) {
             systemInitialization.refreshCache();
@@ -137,7 +139,7 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
                 return ResultBean.notFound("表不存在！");
             }
 
-            List<FieldMetaInfo> fieldMetaInfos = fieldMetaInfoService.list(new QueryWrapper<FieldMetaInfo>().in("table_meta_info_id"));
+            List<FieldMetaInfo> fieldMetaInfos = fieldMetaInfoService.list(new QueryWrapper<FieldMetaInfo>().eq("table_meta_info_id", tableId));
 
             // 组装 tablename、字段的 ddl 语句
             String tableName = DBConvert.tableNameConvertBySerial(tableMetaInfo.getPhysicsTableSerial());

@@ -24,5 +24,4 @@ public interface CreateBusinessService {
     /**
      * 创建物理表
      */
-    ResultBean<String> createPhysicsTable(Long tableId);
 }

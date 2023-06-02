@@ -44,7 +44,7 @@ public class CreateBusinessController {
     /**
      * 创建表的元数据
      */
-    @PostMapping("save-table-info")
+    @PostMapping("create-table")
     public ResultBean<String> saveTableInfo(@RequestBody TableInfoReq req) {
         return exec("save", req.getTableInfo().getTableLogicName(), req, null, null);
     }
@@ -65,15 +65,6 @@ public class CreateBusinessController {
         return exec("search", null, null, req, req.getTableId());
     }
 
-    /**
-     * 创建物理表
-     */
-    @GetMapping("create-physics-table")
-    public ResultBean<String> createPhysicsTable(@RequestParam("tableId") Long tableId) {
-        return exec("create", null, null, null, tableId);
-    }
-
-
     // todo 可能存在bug，需要二次回顾
     private ResultBean<String> exec(String operate, String tableLogicName, TableInfoReq tableInfoReq, SelectEnableFieldsReq req, Long tableId) {
         if (tableLogicName == null) {
@@ -90,12 +81,11 @@ public class CreateBusinessController {
                         return createBusinessService.selectShowFields(req);
                     case "search":
                         return createBusinessService.selectSearchFields(req);
-                    case "create":
-                        return createBusinessService.createPhysicsTable(tableId);
                     default:
                         return null;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 return ResultBean.error(e.getMessage());
             } finally {
                 LockManager.unlock(lockStr);

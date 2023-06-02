@@ -8,5 +8,5 @@ import java.util.List;
 @Mapper
 public interface CreateBusinessMapper {
     int createNewTable(@Param("tableName") String tableName,
-                       @Param("fieldDDL") List<String> fieldDdl);
+                       @Param("fieldDdl") List<String> fieldDdl);
 }
