@@ -40,6 +40,11 @@ export default new Router({
                     meta: { title: '创建数据表' }
                 },
                 {
+                    path: '/common/common',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/common/Common/Index.vue'),
+                    meta: { title: '通用页面' }
+                },
+                {
                     path: '/dashboard',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Dashboard.vue'),
                     meta: { title: '系统首页' }

@@ -37,12 +37,27 @@ public class BusinessController {
     }
 
     @GetMapping("fields")
-    public ResultBean<List<FieldMetaInfoRespDto>> fields(@RequestParam("tableId") Long tableId) {
+    public ResultBean<List<FieldMetaInfoRespDto>> fieldsById(@RequestParam("tableId") Long tableId) {
         TableMetaInfo tableMetaInfo = tableMetaInfoService.getById(tableId);
         if (tableMetaInfo == null) {
             return ResultBean.notFound("表不存在！");
         }
         List<FieldMetaInfo> fieldMetaInfos = fieldMetaInfoService.list(new QueryWrapper<FieldMetaInfo>().eq("table_meta_info_id", tableId));
+        List<FieldMetaInfoRespDto> resp = BeanUtil.copyToList(fieldMetaInfos, FieldMetaInfoRespDto.class);
+        return ResultBean.success(resp);
+    }
+
+    @GetMapping("visible-fields")
+    public ResultBean<List<FieldMetaInfoRespDto>> visibleFieldsByTableLogicName(@RequestParam("tableLogicName") String tableLogicName) {
+        List<TableMetaInfo> tableMetaInfos = tableMetaInfoService.list(new QueryWrapper<TableMetaInfo>().eq("logic_table_name", tableLogicName));
+        if (tableMetaInfos == null || tableMetaInfos.isEmpty()) {
+            return ResultBean.notFound("表不存在！");
+        }
+        TableMetaInfo tableMetaInfo = tableMetaInfos.get(0);
+        List<FieldMetaInfo> fieldMetaInfos = fieldMetaInfoService.list(new QueryWrapper<FieldMetaInfo>()
+                .eq("table_meta_info_id", tableMetaInfo.getId())
+                .eq("enable_show", true)
+        );
         List<FieldMetaInfoRespDto> resp = BeanUtil.copyToList(fieldMetaInfos, FieldMetaInfoRespDto.class);
         return ResultBean.success(resp);
     }
