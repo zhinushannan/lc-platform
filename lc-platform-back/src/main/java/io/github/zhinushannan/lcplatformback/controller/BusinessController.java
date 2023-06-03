@@ -47,8 +47,8 @@ public class BusinessController {
         return ResultBean.success(resp);
     }
 
-    @GetMapping("visible-fields")
-    public ResultBean<List<FieldMetaInfoRespDto>> visibleFieldsByTableLogicName(@RequestParam("tableLogicName") String tableLogicName) {
+    @GetMapping("fields-by-table-logic")
+    public ResultBean<List<FieldMetaInfoRespDto>> fieldsByTableLogicName(@RequestParam("tableLogicName") String tableLogicName) {
         List<TableMetaInfo> tableMetaInfos = tableMetaInfoService.list(new QueryWrapper<TableMetaInfo>().eq("logic_table_name", tableLogicName));
         if (tableMetaInfos == null || tableMetaInfos.isEmpty()) {
             return ResultBean.notFound("表不存在！");
@@ -56,7 +56,6 @@ public class BusinessController {
         TableMetaInfo tableMetaInfo = tableMetaInfos.get(0);
         List<FieldMetaInfo> fieldMetaInfos = fieldMetaInfoService.list(new QueryWrapper<FieldMetaInfo>()
                 .eq("table_meta_info_id", tableMetaInfo.getId())
-                .eq("enable_show", true)
         );
         List<FieldMetaInfoRespDto> resp = BeanUtil.copyToList(fieldMetaInfos, FieldMetaInfoRespDto.class);
         return ResultBean.success(resp);

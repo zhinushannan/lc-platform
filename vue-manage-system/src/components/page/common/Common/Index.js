@@ -19,7 +19,8 @@ export default {
                 formStructure: [],
                 formData: {},
                 rules: {}
-            }
+            },
+            visibleFields: []
         }
     },
     methods: {
@@ -30,11 +31,17 @@ export default {
     },
     mounted() {
         request({
-            url: `/business/visible-fields?tableLogicName=${this.tableLogicName}`,
+            url: `/business/fields-by-table-logic?tableLogicName=${this.tableLogicName}`,
             method: 'get'
         }).then((resp) => {
             this.dialog.formStructure = resp.data
-            console.log(this.dialog)
+
+            for(let i in resp.data) {
+                if (resp.data[i].enableShow) {
+                    this.visibleFields.push(resp.data[i])
+                }
+            }
         })
+
     }
 }

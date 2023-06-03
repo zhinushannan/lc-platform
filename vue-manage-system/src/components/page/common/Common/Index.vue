@@ -25,30 +25,12 @@
           :data="page.records"
           border
           style="width: 100%">
-        <el-table-column
-            prop="date"
-            label="日期">
-        </el-table-column>
-        <el-table-column
-            prop="name"
-            label="姓名">
-        </el-table-column>
-        <el-table-column
-            prop="province"
-            label="省份">
-        </el-table-column>
-        <el-table-column
-            prop="city"
-            label="市区">
-        </el-table-column>
-        <el-table-column
-            prop="createTime"
-            label="创建时间">
-        </el-table-column>
-        <el-table-column
-            prop="updateTime"
-            label="更新时间">
-        </el-table-column>
+        <template v-for="item in visibleFields">
+          <el-table-column
+              :prop="item.logicFieldName"
+              :label="item.businessFieldName">
+          </el-table-column>
+        </template>
         <el-table-column
             fixed="right"
             label="操作"
