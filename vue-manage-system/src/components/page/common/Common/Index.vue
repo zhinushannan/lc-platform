@@ -16,7 +16,7 @@
     <div class="container">
 
       <div style="margin-bottom: 10px">
-        <el-button type="primary" icon="el-icon-plus">添加数据</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="addRecord()">添加数据</el-button>
         <el-button type="danger" icon="el-icon-delete">删除选中</el-button>
       </div>
 
@@ -45,8 +45,8 @@
             label="操作"
             width="100">
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+<!--            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
+            <el-button type="text" size="small" @click="modify(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

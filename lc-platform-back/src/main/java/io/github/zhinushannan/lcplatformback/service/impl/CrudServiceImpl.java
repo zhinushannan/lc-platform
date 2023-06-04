@@ -30,9 +30,6 @@ public class CrudServiceImpl implements CrudService {
 
     @Override
     public ResultBean<String> save(String tableLogicName, JSONObject jsonObject) {
-        System.out.println(tableLogicName);
-        System.out.println(jsonObject);
-
         TableMetaInfo tableMetaInfo = Cache.getTableMetaInfoByTableLogicName(tableLogicName);
         List<FieldMetaInfo> fieldMetaInfos = Cache.getFieldMetaInfosByTableId(tableMetaInfo.getId());
 
@@ -67,6 +64,25 @@ public class CrudServiceImpl implements CrudService {
 
     @Override
     public String update(String tableLogicName, JSONObject jsonObject) {
+        TableMetaInfo tableMetaInfo = Cache.getTableMetaInfoByTableLogicName(tableLogicName);
+        List<FieldMetaInfo> fieldMetaInfos = Cache.getFieldMetaInfosByTableId(tableMetaInfo.getId());
+
+        Map<String, Object> values = new HashMap<String, Object>() {{
+            put("update_time", LocalDateTime.now());
+        }};
+
+        for (FieldMetaInfo fieldMetaInfo : fieldMetaInfos) {
+            String physicsFieldName = "f_" + fieldMetaInfo.getPhysicsFieldSerial();
+            Boolean nullable = fieldMetaInfo.getNullable();
+            Object val = jsonObject.get(fieldMetaInfo.getLogicFieldName());
+            if (!nullable || ObjectUtil.isEmpty(val)) {
+                throw CrudException.NULL_NOT_ALLOW_FIELD_NULL;
+            }
+            values.put(physicsFieldName, val);
+        }
+
+        crudMapper.update("t_" + tableMetaInfo.getPhysicsTableSerial(), jsonObject.get("id", Long.class), values);
+        System.out.println("jsonObject" + jsonObject);
         return null;
     }
 
@@ -88,6 +104,7 @@ public class CrudServiceImpl implements CrudService {
 
         Collection<String> logicNames = phyLogicMap.values();
         for (Map<String, Object> datum : data) {
+            datum.put("id", datum.get("id").toString());
             Set<String> keys = datum.keySet();
             for (String logicName : logicNames) {
                 if (!keys.contains(logicName)) {

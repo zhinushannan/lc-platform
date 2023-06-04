@@ -55,8 +55,27 @@ export default {
                 console.log(resp)
             })
         },
-        update() {},
-
+        update() {
+            request({
+                url: `/crud/${this.tableLogicName}`,
+                method: 'put',
+                data: this.dialog.formData
+            }).then((resp) => {
+                console.log(resp)
+            })
+        },
+        addRecord() {
+            this.dialog.visible = true
+            this.dialog.title = '新增'
+            this.dialog.opera = 'insert'
+            this.dialog.formData = {}
+        },
+        modify(row) {
+            this.dialog.visible = true
+            this.dialog.title = '修改'
+            this.dialog.opera = 'update'
+            this.dialog.formData = JSON.parse(JSON.stringify(row))
+        },
         handleSizeChange(val) {
             this.page.size = val
             this.list()
