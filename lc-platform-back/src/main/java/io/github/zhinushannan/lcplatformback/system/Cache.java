@@ -28,6 +28,11 @@ public abstract class Cache {
         return TABLE_META_INFO_MAP.get(logicName);
     }
 
+    public static List<FieldMetaInfo> getFieldMetaInfoByTableLogicName(String tableLogicName) {
+        Long id = getTableMetaInfoByTableLogicName(tableLogicName).getId();
+        return getFieldMetaInfosByTableId(id);
+    }
+
     public static List<FieldMetaInfo> getFieldMetaInfosByTableId(Long tableId) {
         return FIELD_META_INFO_MAP.get(tableId);
     }

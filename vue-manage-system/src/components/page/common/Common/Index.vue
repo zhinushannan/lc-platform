@@ -60,7 +60,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="closeAndReset">取 消</el-button>
-          <el-button type="primary" @click="closeAndReset">确 定</el-button>
+          <el-button type="primary" @click="commit(dialog.opera)">确 定</el-button>
         </span>
       </el-dialog>
 

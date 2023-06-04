@@ -16,6 +16,7 @@ export default {
             dialog: {
                 visible: true,
                 title: '新增',
+                opera: 'insert',
                 formStructure: [],
                 formData: {},
                 rules: {}
@@ -27,7 +28,24 @@ export default {
         closeAndReset() {
             this.dialog.visible = false
             this.dialog.formData = JSON.parse(JSON.stringify(this.dialog.emptyFormData))
-        }
+        },
+        commit(opera) {
+            if (opera === 'insert') {
+                this.insert()
+            } else if (opera === 'update') {
+                this.update()
+            }
+        },
+        insert() {
+            request({
+                url: `/crud/${this.tableLogicName}`,
+                method: 'post',
+                data: this.dialog.formData
+            }).then((resp) => {
+                console.log(resp)
+            })
+        },
+        update() {}
     },
     mounted() {
         request({

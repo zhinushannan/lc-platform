@@ -12,7 +12,7 @@ public interface CrudMapper {
 
     int save(@Param("physicsTableName") String physicsTableName,
              @Param("fields") List<String> fields,
-             @Param("values") List<String> values);
+             @Param("values") List<Object> values);
 
     int update(@Param("physicsTableName") String physicsTableName,
                @Param("id") Long id,
