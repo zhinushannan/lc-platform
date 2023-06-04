@@ -14,7 +14,7 @@ export default {
             },
             // todo rules 校验
             dialog: {
-                visible: true,
+                visible: false,
                 title: '新增',
                 opera: 'insert',
                 formStructure: [],
@@ -25,6 +25,16 @@ export default {
         }
     },
     methods: {
+        list() {
+            request({
+                url: `/crud/${this.tableLogicName}/page`,
+                method: 'post',
+                data: this.page
+            }).then((resp) => {
+                console.log(resp)
+                this.page = resp.data
+            })
+        },
         closeAndReset() {
             this.dialog.visible = false
             this.dialog.formData = JSON.parse(JSON.stringify(this.dialog.emptyFormData))
@@ -45,7 +55,19 @@ export default {
                 console.log(resp)
             })
         },
-        update() {}
+        update() {},
+
+        handleSizeChange(val) {
+            this.page.size = val
+            this.list()
+        },
+        handleCurrentChange(val) {
+            this.page.current = val
+            this.list()
+        },
+        dataFormatter(row, column, cellValue, index) {
+            return cellValue.replace("T", " ")
+        }
     },
     mounted() {
         request({
@@ -60,6 +82,8 @@ export default {
                 }
             }
         })
+
+        this.list()
 
     }
 }

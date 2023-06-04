@@ -21,4 +21,11 @@ public interface CrudMapper {
     int delete(@Param("physicsTableName") String physicsTableName,
                @Param("ids") List<Long> ids);
 
+    List<Map<String, Object>> list(@Param("physicsTableName") String physicsTableName,
+                      @Param("phyLogic") Map<String, String> phyLogic,
+                      @Param("cursor") long cursor,
+                      @Param("size") long size);
+
+    long count(@Param("physicsTableName") String physicsTableName);
+
 }

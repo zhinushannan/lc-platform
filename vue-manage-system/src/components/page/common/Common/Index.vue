@@ -25,12 +25,21 @@
           :data="page.records"
           border
           style="width: 100%">
-        <template v-for="item in visibleFields">
-          <el-table-column
-              :prop="item.logicFieldName"
-              :label="item.businessFieldName">
-          </el-table-column>
-        </template>
+        <el-table-column
+            v-for="item in visibleFields"
+            :prop="item.logicFieldName"
+            :label="item.businessFieldName">
+        </el-table-column>
+        <el-table-column
+            prop="createTime"
+            label="创建时间"
+            :formatter="dataFormatter">
+        </el-table-column>
+        <el-table-column
+            prop="updateTime"
+            :formatter="dataFormatter"
+            label="修改时间">
+        </el-table-column>
         <el-table-column
             fixed="right"
             label="操作"
@@ -42,6 +51,16 @@
         </el-table-column>
       </el-table>
 
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="page.current"
+          :page-sizes="[10, 50, 100]"
+          :page-size="page.size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="page.total">
+      </el-pagination>
+
     </div>
 
     <div>
@@ -50,8 +69,8 @@
           :title="dialog.title"
           :visible.sync="dialog.visible"
           width="30%">
-        <span>{{ dialog.formData }}</span>
-        <el-form :model="dialog.formData" status-icon ref="formData" label-width="75px" style="width: 80%; margin: auto" class="demo-ruleForm">
+        <el-form :model="dialog.formData" status-icon ref="formData" label-width="75px" style="width: 80%; margin: auto"
+                 class="demo-ruleForm">
           <template v-for="item in dialog.formStructure">
             <el-form-item :label="item.businessFieldName" :prop="item.logicFieldName">
               <el-input v-model="dialog.formData[item.logicFieldName]" autocomplete="off"></el-input>
