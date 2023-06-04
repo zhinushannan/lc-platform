@@ -26,6 +26,7 @@ public class CORSConfig implements WebMvcConfigurer {
         corsConfiguration.addAllowedMethod("GET");
         corsConfiguration.addAllowedMethod("POST");
         corsConfiguration.addAllowedMethod("PUT");
+        corsConfiguration.addAllowedMethod("DELETE");
         corsConfiguration.addExposedHeader("Authorization");
         source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(source);

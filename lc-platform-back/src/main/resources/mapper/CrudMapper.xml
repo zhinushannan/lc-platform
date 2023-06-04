@@ -22,7 +22,7 @@
     </update>
 
     <delete id="delete">
-        DELETE FROM `${physicsTableName}` WHERE `id` in
+        UPDATE `${physicsTableName}` set `deleted`=1 where `id` in
         <foreach collection="ids" item="item" separator=", " open="(" close=")">
             #{item}
         </foreach>

@@ -17,14 +17,19 @@
 
       <div style="margin-bottom: 10px">
         <el-button type="primary" icon="el-icon-plus" @click="addRecord()">添加数据</el-button>
-        <el-button type="danger" icon="el-icon-delete">删除选中</el-button>
+        <el-button type="danger" icon="el-icon-delete" @click="delBatch()">删除选中</el-button>
       </div>
 
 
       <el-table
           :data="page.records"
           border
-          style="width: 100%">
+          style="width: 100%"
+          @selection-change="handleSelectionChange">
+        <el-table-column
+            type="selection"
+            width="55">
+        </el-table-column>
         <el-table-column
             v-for="item in visibleFields"
             :prop="item.logicFieldName"

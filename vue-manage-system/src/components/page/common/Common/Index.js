@@ -21,7 +21,8 @@ export default {
                 formData: {},
                 rules: {}
             },
-            visibleFields: []
+            visibleFields: [],
+            multipleSelection: []
         }
     },
     methods: {
@@ -64,6 +65,19 @@ export default {
                 console.log(resp)
             })
         },
+        delBatch() {
+            let delIds = []
+            for (let i in this.multipleSelection) {
+                delIds.push(this.multipleSelection[i].id)
+            }
+            request({
+                url: `/crud/${this.tableLogicName}`,
+                method: 'delete',
+                data: delIds
+            }).then((resp) => {
+                console.log(resp)
+            })
+        },
         addRecord() {
             this.dialog.visible = true
             this.dialog.title = '新增'
@@ -86,6 +100,9 @@ export default {
         },
         dataFormatter(row, column, cellValue, index) {
             return cellValue.replace("T", " ")
+        },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
         }
     },
     mounted() {

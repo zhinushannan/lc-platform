@@ -88,6 +88,8 @@ public class CrudServiceImpl implements CrudService {
 
     @Override
     public String delete(String tableLogicName, List<Long> ids) {
+        TableMetaInfo tableMetaInfo = Cache.getTableMetaInfoByTableLogicName(tableLogicName);
+        crudMapper.delete("t_" + tableMetaInfo.getPhysicsTableSerial(), ids);
         return null;
     }
 
@@ -109,7 +111,6 @@ public class CrudServiceImpl implements CrudService {
             for (String logicName : logicNames) {
                 if (!keys.contains(logicName)) {
                     datum.put(logicName, null);
-                    System.out.println("缺少 logicName : " + logicName);
                 }
             }
         }
