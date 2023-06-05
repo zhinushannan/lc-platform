@@ -29,12 +29,30 @@
         <el-radio v-model="item.nullable" label="false">否</el-radio>
       </el-form-item>
 
+      <el-form-item label="前端是否展示">
+        <el-radio v-model="item.enableShow" label="true">是</el-radio>
+        <el-radio v-model="item.enableShow" label="false">否</el-radio>
+      </el-form-item>
+
+      <el-form-item label="搜索模式">
+        <el-select v-model="item.searchMode" placeholder="请选择">
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
     </el-form>
 
   </div>
 </template>
 
 <script>
+import request from "@/utils/request";
+
 export default {
   props: {
     item: {},
@@ -80,6 +98,7 @@ export default {
           {validator: checkFieldNullable, trigger: 'blur'}
         ]
       },
+      options: [],
       dfTypeProps: []
     }
   },
@@ -99,6 +118,14 @@ export default {
         }
       }
     }
+  },
+  mounted() {
+    request({
+      url: `/common/select-mode`,
+      method: 'get'
+    }).then((resp) => {
+      this.options = resp.data
+    })
   }
 }
 

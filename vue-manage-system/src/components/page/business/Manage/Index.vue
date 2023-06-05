@@ -14,6 +14,11 @@
     </div>
 
     <div class="container">
+
+      <div style="margin-bottom: 10px">
+        <el-button type="primary" icon="el-icon-plus" @click="addTable()">新增数据表</el-button>
+      </div>
+
       <el-table
           :data="page.records"
           border

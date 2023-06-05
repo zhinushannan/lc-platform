@@ -1,6 +1,7 @@
 import request from "@/utils/request";
 import FieldComponent from "@/components/components/business/CreateBusiness/FieldComponent.vue";
 import ChoiceShowField from "@/components/components/business/CreateBusiness/ChoiceShowField.vue";
+
 export default {
     name: "Index",
     components: {ChoiceShowField, FieldComponent},
@@ -44,15 +45,14 @@ export default {
                     tableLogicName: '',
                     tableBusinessName: ''
                 },
-                fieldInfos: [
-                    {
-                        fieldLogicName: '',
-                        fieldBusinessName: '',
-                        fieldJdbcType: '',
-                        fieldJdbcLength: '',
-                        nullable: 'true'
-                    }
-                ],
+                fieldInfos: [],
+            },
+            dialog: {
+                visible: false,
+                title: '',
+                operate: '',
+                item: {},
+                dbType: []
             },
             metaInfoRule: {
                 tableInfo: {
@@ -74,59 +74,25 @@ export default {
             url: '/common/db-type',
             method: 'get'
         }).then((resp) => {
-            _this.dbType = resp.data
+            _this.dialog.dbType = resp.data
         })
     },
     methods: {
         onConfirm() {
-            let message = ""
 
-            let fields = this.metaInfo.fieldInfos
-            // 字段 逻辑名 重复校验
-            let logicName = {}
-            for (let i in fields) {
-                if (!logicName[fields[i]['fieldLogicName']]) {
-                    logicName[fields[i]['fieldLogicName']] = 0
-                }
-                logicName[fields[i]['fieldLogicName']]++
+            let tableInfo = this.metaInfo.tableInfo
+            if (!tableInfo.tableLogicName) {
+                this.$message.error('表逻辑名不能为空')
+                return
             }
-            for (let i in logicName) {
-                if (logicName[i] > 1) {
-                    if (message === "") {
-                        message = "存在重复字段逻辑名："
-                    }
-                    message += i + ", "
-                }
+
+            if (!tableInfo.tableBusinessName) {
+                this.$message.error('表逻辑名不能为空')
+                return
             }
-            if (message !== "") {
-                message = message.substring(0, message.length - 2)
-                message += "<br/><br/>"
-            }
-            // 字段 业务名 重复校验
-            let businessName = {}
-            for (let i in fields) {
-                if (!businessName[fields[i]['fieldBusinessName']]) {
-                    businessName[fields[i]['fieldBusinessName']] = 0
-                }
-                businessName[fields[i]['fieldBusinessName']]++
-            }
-            for (let i in businessName) {
-                if (businessName[i] > 1) {
-                    if (message.endsWith("<br/><br/>")) {
-                        message += "存在重复字段业务名："
-                    }
-                    message += i + ", "
-                }
-            }
-            if (message !== "") {
-                message = message.substring(0, message.length - 2)
-                this.$message({
-                    dangerouslyUseHTMLString: true,
-                    message: message,
-                    type: 'error',
-                    duration: 0,
-                    showClose: true
-                });
+
+            if (this.metaInfo.fieldInfos.length === 0) {
+                this.$message.error('至少要有一个字段')
                 return
             }
 
@@ -145,13 +111,18 @@ export default {
             })
         },
         addField() {
-            this.metaInfo.fieldInfos.push({
+            this.dialog.item = {
                 fieldLogicName: '',
                 fieldBusinessName: '',
                 fieldJdbcType: '',
                 fieldJdbcLength: '',
-                nullable: 'true'
-            })
+                nullable: 'true',
+                enableShow: 'true',
+                searchMode: 0
+            }
+            this.dialog.title = '新增字段'
+            this.dialog.operate = 'add'
+            this.dialog.visible = true
         },
         removeField(index) {
             if (this.metaInfo.fieldInfos.length === 1) {
@@ -159,6 +130,61 @@ export default {
                 return
             }
             this.metaInfo.fieldInfos.splice(index, 1)
+        },
+        commitDialog() {
+            let currentItem = this.dialog.item
+
+            if (!currentItem.fieldLogicName) {
+                this.$message.error('字段逻辑名不能为空')
+                return
+            }
+
+            if (!currentItem.fieldBusinessName) {
+                this.$message.error('字段业务名不能为空')
+                return
+            }
+
+            if (!currentItem.fieldJdbcType) {
+                this.$message.error('字段类型不能为空')
+                return
+            }
+
+            let fieldInfos = this.metaInfo.fieldInfos
+            let message = []
+            for (let i in fieldInfos) {
+                if (currentItem.fieldLogicName === fieldInfos[i].fieldLogicName && message.indexOf('存在重复逻辑字段名') === -1) {
+                    message.push('存在重复逻辑字段名')
+                }
+                if (currentItem.fieldBusinessName === fieldInfos[i].fieldBusinessName && message.indexOf('存在重复业务字段名') === -1) {
+                    message.push('存在重复业务字段名')
+                }
+            }
+            if (message.length !== 0) {
+                this.$message({
+                    dangerouslyUseHTMLString: true,
+                    message: message.join('<br/><br/>'),
+                    type: 'error'
+                });
+                return
+            }
+
+            this.metaInfo.fieldInfos.push(JSON.parse(JSON.stringify(this.dialog.item)))
+            this.closeDialog()
+        },
+        closeDialog() {
+            this.dialog.visible = false
+            this.dialog.title = ''
+            this.dialog.operate = ''
+            this.dialog.item = {}
+        },
+        handleClose(done) {
+            this.$confirm('关闭后未保存的数据将丢失，是否关闭？')
+                .then(_ => {
+                    this.closeDialog()
+                    done();
+                })
+                .catch(_ => {
+                });
         }
     }
 }

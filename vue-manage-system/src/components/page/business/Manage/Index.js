@@ -23,6 +23,9 @@ export default {
             })
         },
 
+        addTable() {
+            this.$router.push("/business/create-table")
+        },
         editBusiness(scope) {
             this.$router.push({
                 path: "/business/operate-set",

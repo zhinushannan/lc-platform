@@ -26,17 +26,53 @@
             <el-input v-model="metaInfo.tableInfo.tableBusinessName" placeholder="请输入表业务名称"></el-input>
           </el-form-item>
 
-          <div v-for="(item, index) in metaInfo.fieldInfos">
-            <el-divider>字段{{ index + 1 }}
-              <el-link @click="removeField(index)">(点击删除)</el-link>
-            </el-divider>
+          <el-divider>字段信息</el-divider>
 
-            <FieldComponent :item="item" :db-type="dbType"/>
+          <el-button @click="addField" style="margin-bottom: 10px">添加一个字段</el-button>
 
-          </div>
+          <el-table
+              :data="metaInfo.fieldInfos"
+              border
+              style="width: 100%">
+            <el-table-column
+                prop="fieldLogicName"
+                label="逻辑名称">
+            </el-table-column>
+            <el-table-column
+                prop="fieldBusinessName"
+                label="业务名称">
+            </el-table-column>
+            <el-table-column
+                prop="fieldJdbcType"
+                label="字段类型">
+            </el-table-column>
+            <el-table-column
+                prop="fieldJdbcLength"
+                label="字段长度">
+            </el-table-column>
+            <el-table-column
+                prop="nullable"
+                label="是否允许为空">
+            </el-table-column>
+            <el-table-column
+                prop="enableShow"
+                label="前端是否展示">
+            </el-table-column>
+            <el-table-column
+                prop="searchMode"
+                label="搜索模式">
+            </el-table-column>
+            <el-table-column
+                fixed="right"
+                label="操作"
+                width="100">
+              <template slot-scope="scope">
+                <el-button @click="handleClick(scope.row)" type="text" size="small">移除</el-button>
+                <el-button type="text" size="small">编辑</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
-
-          <el-button style="margin-left: 50%;" @click="addField">添加一个字段</el-button>
         </el-form>
 
 
@@ -44,16 +80,31 @@
             title="提交后表结构不能修改，是否确认提交？"
             @confirm="onConfirm"
         >
-            <el-button slot="reference" type="primary" plain>创建数据表</el-button>
+          <el-button slot="reference" type="primary" style="margin-top: 10px">创建数据表</el-button>
         </el-popconfirm>
 
       </div>
 
     </div>
 
+    <!-- 添加/修改字段的弹框 -->
+    <div>
+      <el-dialog
+          :title="dialog.title"
+          :visible.sync="dialog.visible"
+          width="50%"
+          :before-close="handleClose">
+
+        <FieldComponent :item="dialog.item" :db-type="dialog.dbType"/>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="handleClose">取 消</el-button>
+          <el-button type="primary" @click="commitDialog">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+
   </div>
-
-
 
 </template>
 <script>
