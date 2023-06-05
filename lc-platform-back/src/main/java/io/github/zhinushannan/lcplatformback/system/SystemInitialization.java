@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class SystemInitialization implements InitializingBean, SmartLifecycle {
+public class SystemInitialization implements InitializingBean {
 
     @Autowired
     private TableMetaInfoService tableMetaInfoService;
@@ -35,8 +35,6 @@ public class SystemInitialization implements InitializingBean, SmartLifecycle {
 
     @Value("${system.initialization:false}")
     private Boolean isInitialization;
-
-    private boolean isRunning = false;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -86,23 +84,4 @@ public class SystemInitialization implements InitializingBean, SmartLifecycle {
         }
     }
 
-    @Override
-    public void start() {
-        this.isRunning = true;
-    }
-
-    @Override
-    public void stop() {
-        this.isRunning = false;
-    }
-
-    @Override
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    @Override
-    public int getPhase() {
-        return Integer.MAX_VALUE;
-    }
 }
