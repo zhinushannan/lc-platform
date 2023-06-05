@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.zhinushannan.lcplatformback.mapper.SystemInitializationMapper">
+
+    <select id="selectAllTableNames" resultType="java.lang.String">
+        SHOW TABLES;
+    </select>
+
+    <update id="dropTables">
+        DROP TABLE IF EXISTS `${tableName}`;
+    </update>
+
+    <update id="createTableMetaInfo">
+        CREATE TABLE `table_meta_info`
+        (
+            `id`                   BIGINT(20)   NOT NULL COMMENT '通用字段，雪花ID',
+            `create_time`          datetime     NOT NULL COMMENT '通用字段，创建时间',
+            `update_time`          datetime     NOT NULL COMMENT '通用字段，更新时间',
+            `deleted`              TINYINT(4)   NOT NULL COMMENT '通用字段，逻辑删除',
+            `physics_table_serial` INT(11)      NOT NULL COMMENT '表的物理序号，用于拼接表物理名称，物理名称为 t_',
+            `logic_table_name`     VARCHAR(255) NOT NULL COMMENT '表的逻辑名称',
+            `business_table_name`  VARCHAR(255) NOT NULL COMMENT '表的业务名称',
+            PRIMARY KEY (`id`)
+        ) ENGINE = INNODB
+          DEFAULT CHARSET = utf8mb4;
+
+    </update>
+
+    <update id="createFieldMetaInfo">
+        CREATE TABLE `field_meta_info`
+        (
+            `id`                   BIGINT(20)   NOT NULL COMMENT '通用字段，雪花ID',
+            `create_time`          datetime     NOT NULL COMMENT '通用字段，创建时间',
+            `update_time`          datetime     NOT NULL COMMENT '通用字段，更新时间',
+            `deleted`              TINYINT(4)   NOT NULL COMMENT '通用字段，逻辑删除',
+            `physics_field_serial` INT(11)      NOT NULL COMMENT '字段的物理序号，用于拼接字段物理名称，物理名称为 f_',
+            `logic_field_name`     VARCHAR(255) NOT NULL COMMENT '字段逻辑名称',
+            `business_field_name`  VARCHAR(255) NOT NULL COMMENT '字段业务名称',
+            `table_meta_info_id`   BIGINT(20)   NOT NULL COMMENT '表元数据ID',
+            `field_type`           VARCHAR(255) NOT NULL COMMENT '字段类型',
+            `field_length`         INT(11)      NOT NULL COMMENT '字段长度',
+            `nullable`             TINYINT(4)   NOT NULL COMMENT '字段是否允许为空',
+            `enable_show`          TINYINT(4)   NOT NULL COMMENT '字段是否在前端展示',
+            `search_mode`          TINYINT(4)   NOT NULL COMMENT '字段的搜索模式，0不提供搜索、1选择搜索、2模糊匹配、3精确匹配',
+            PRIMARY KEY (`id`)
+        ) ENGINE = INNODB
+          DEFAULT CHARSET = utf8mb4;
+    </update>
+
+</mapper>
