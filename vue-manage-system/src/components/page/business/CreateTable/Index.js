@@ -1,6 +1,7 @@
 import request from "@/utils/request";
 import FieldComponent from "@/components/components/business/CreateBusiness/FieldComponent.vue";
 import ChoiceShowField from "@/components/components/business/CreateBusiness/ChoiceShowField.vue";
+import bus from "@/components/common/bus";
 
 export default {
     name: "Index",
@@ -37,9 +38,6 @@ export default {
             })
         }
         return {
-            dbType: [],
-            active: 1,
-            fieldInfoCount: 1,
             metaInfo: {
                 tableInfo: {
                     tableLogicName: '',
@@ -102,12 +100,13 @@ export default {
                 data: this.metaInfo
             }).then((resp) => {
                 if (resp.code === 200) {
-                    if (tmp >= 0 && tmp <= 3) {
-                        this.active = tmp
-                    }
+                    this.tableId = resp.data
+                    this.fullscreenLoading = false;
+                    this.$message.success('新增成功')
+                    bus.$emit('close_current_tags')
+                } else {
+                    this.$message.error(resp.message)
                 }
-                this.tableId = resp.data
-                this.fullscreenLoading = false;
             })
         },
         addField() {
