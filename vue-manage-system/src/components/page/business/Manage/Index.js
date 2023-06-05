@@ -34,8 +34,14 @@ export default {
                 }
             })
         },
-        delTable() {
-
+        delTable(row) {
+            request({
+                url: `/business/delete?tableId=${row.id}`,
+                method: 'delete'
+            }).then((resp) => {
+                this.$message.success("删除成功！")
+                this.list()
+            })
         },
 
 

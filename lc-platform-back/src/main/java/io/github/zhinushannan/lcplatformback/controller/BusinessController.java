@@ -10,6 +10,7 @@ import io.github.zhinushannan.lcplatformback.dto.resp.FieldMetaInfoRespDto;
 import io.github.zhinushannan.lcplatformback.dto.resp.TableInfoRespDto;
 import io.github.zhinushannan.lcplatformback.entity.FieldMetaInfo;
 import io.github.zhinushannan.lcplatformback.entity.TableMetaInfo;
+import io.github.zhinushannan.lcplatformback.service.BusinessService;
 import io.github.zhinushannan.lcplatformback.service.FieldMetaInfoService;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class BusinessController {
     @Autowired
     private FieldMetaInfoService fieldMetaInfoService;
 
+    @Autowired
+    private BusinessService businessService;
+
     @PostMapping("page")
     public ResultBean<IPage<TableInfoRespDto>> page(@RequestBody TableInfoPageCondition condition) {
         Page<TableMetaInfo> page = condition.getPage();
@@ -35,6 +39,13 @@ public class BusinessController {
         IPage<TableInfoRespDto> convert = page.convert(tableMetaInfo -> BeanUtil.copyProperties(tableMetaInfo, TableInfoRespDto.class));
         return ResultBean.success(convert);
     }
+
+    @DeleteMapping("delete")
+    public ResultBean<String> delete(@RequestParam("tableId") Long tableId) {
+        businessService.delete(tableId);
+        return ResultBean.success("删除成功！");
+    }
+
 
     @GetMapping("fields")
     public ResultBean<List<FieldMetaInfoRespDto>> fieldsById(@RequestParam("tableId") Long tableId) {
