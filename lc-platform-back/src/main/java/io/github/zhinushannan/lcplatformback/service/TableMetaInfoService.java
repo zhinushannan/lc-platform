@@ -24,4 +24,5 @@ public interface TableMetaInfoService extends IService<TableMetaInfo> {
      */
     ResultBean<String> checkTableBusiness(String businessName);
 
+    TableMetaInfo getByIdWithAssertNull(Long tableMetaInfoId);
 }

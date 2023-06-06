@@ -3,10 +3,13 @@ package io.github.zhinushannan.lcplatformback.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.zhinushannan.lcplatformback.bean.ResultBean;
 import io.github.zhinushannan.lcplatformback.entity.TableMetaInfo;
+import io.github.zhinushannan.lcplatformback.exception.TableMetaInfoException;
 import io.github.zhinushannan.lcplatformback.mapper.TableMetaInfoMapper;
 import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
 import io.github.zhinushannan.lcplatformback.system.Cache;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * <p>
@@ -29,5 +32,10 @@ public class TableMetaInfoServiceImpl extends ServiceImpl<TableMetaInfoMapper, T
     public ResultBean<String> checkTableBusiness(String businessName) {
         Boolean businessNameExist = Cache.hasTableBusinessNameExist(businessName);
         return businessNameExist ? ResultBean.error("该业务表名已存在！") : ResultBean.success();
+    }
+
+    @Override
+    public TableMetaInfo getByIdWithAssertNull(Long tableMetaInfoId) {
+        return Optional.of(getById(tableMetaInfoId)).orElseThrow(() -> TableMetaInfoException.NOW_FOUND);
     }
 }
