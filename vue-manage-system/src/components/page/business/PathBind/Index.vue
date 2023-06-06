@@ -47,6 +47,15 @@
         </el-table-column>
 
       </el-table>
+
+      <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          layout="prev, pager, next"
+          :page-size="page.size"
+          :total="page.total">
+      </el-pagination>
+
     </div>
 
     <!-- 新增/修改 目录/路径 的弹框 -->

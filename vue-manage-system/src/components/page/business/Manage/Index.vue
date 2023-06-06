@@ -52,6 +52,15 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          layout="prev, pager, next"
+          :page-size="page.size"
+          :total="page.total">
+      </el-pagination>
+
     </div>
 
   </div>

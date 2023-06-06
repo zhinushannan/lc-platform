@@ -96,6 +96,10 @@ export default {
         },
         dataFormatter(row, column, cellValue, index) {
             return cellValue.replace("T", " ")
+        },
+        handleCurrentChange(val) {
+            this.page.current = val
+            this.list()
         }
     },
     mounted() {
