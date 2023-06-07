@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -188,7 +186,7 @@ public class PathBindController {
 
     @GetMapping("sidebar")
     public ResultBean<List<SideBarItemsResp>> getSidebar() {
-        List<PathBind> list = pathBindService.list(new QueryWrapper<PathBind>().orderByAsc("sort"));
+        List<PathBind> list = pathBindService.list(new QueryWrapper<PathBind>().eq("enable", true).orderByAsc("sort"));
 
         List<PathBind> dir = list.stream().filter(pathBind -> pathBind.getParentId() == null).collect(Collectors.toList());
 
@@ -197,13 +195,13 @@ public class PathBindController {
         Map<Long, List<PathBind>> parentIdPathMap = list.stream().collect(Collectors.groupingBy(PathBind::getParentId));
 
         Set<Long> tableIds = list.stream().map(PathBind::getTableMetaInfoId).collect(Collectors.toSet());
-        Map<Long, TableMetaInfo> tableIdTableMap = tableMetaInfoService.listByIds(tableIds).stream().collect(Collectors.toMap(TableMetaInfo::getId, t -> t));
+        Map<Long, TableMetaInfo> tableIdTableMap = tableIds.isEmpty() ? new HashMap<>() : tableMetaInfoService.listByIds(tableIds).stream().collect(Collectors.toMap(TableMetaInfo::getId, t -> t));
 
         List<SideBarItemsResp> collect = dir.stream().map(dir1 -> SideBarItemsResp.builder()
                 .icon("")
                 .index(dir1.getName())
                 .title(dir1.getName())
-                .subs(Optional.of(parentIdPathMap.get(dir1.getId())).orElse(new ArrayList<>()).stream()
+                .subs(Optional.ofNullable(parentIdPathMap.get(dir1.getId())).orElse(new ArrayList<>()).stream()
                         .map(path -> SideBarItemsResp.SubSideBar.builder()
                                 .index("/lc/" + dir1.getPrefix() + "/" + tableIdTableMap.get(path.getTableMetaInfoId()).getLogicTableName())
                                 .title(path.getName())
@@ -211,6 +209,38 @@ public class PathBindController {
                         .collect(Collectors.toList()))
                 .build()).collect(Collectors.toList());
         return ResultBean.success(collect);
+    }
+
+    @PostMapping("change-enable")
+    public ResultBean<String> changeEnable(@RequestBody PathBindReq pathBindReq) {
+        Long id = pathBindReq.getId();
+
+        PathBind pathBind = pathBindService.getById(id);
+        if (pathBind == null) {
+            throw PathBindException.NOT_FOUNT;
+        }
+
+        if (pathBind.getParentId() != null) {
+            pathBind.setEnable(pathBindReq.getEnable());
+            pathBindService.updateById(pathBind);
+
+            PathBind dir = pathBindService.getById(pathBind.getParentId());
+            if (!dir.getEnable() && pathBind.getEnable()) {
+                dir.setEnable(pathBind.getEnable());
+                pathBindService.updateById(dir);
+            }
+
+        } else {
+            pathBind.setEnable(pathBindReq.getEnable());
+            pathBindService.updateById(pathBind);
+            if (!pathBind.getEnable()) {
+                List<PathBind> list = pathBindService.list(new QueryWrapper<PathBind>().eq("parent_id", pathBind.getId()));
+                List<PathBind> collect = list.stream().peek(p -> p.setEnable(pathBindReq.getEnable())).collect(Collectors.toList());
+                pathBindService.updateBatchById(collect);
+            }
+        }
+
+        return ResultBean.success("更新成功！");
     }
 
 }

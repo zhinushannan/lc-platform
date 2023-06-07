@@ -41,4 +41,8 @@ public class PathBind extends BaseEntity {
     @TableField("sort")
     private Integer sort;
 
+    @TableField("enable")
+    private Boolean enable;
+
+
 }

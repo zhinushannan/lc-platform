@@ -19,6 +19,8 @@ public class PathBindResp {
 
     private Integer sort;
 
+    private Boolean enable;
+
     @JsonSerialize(using = ToStringSerializer.class)
     private Long tableMetaInfoId;
 

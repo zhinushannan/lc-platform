@@ -50,6 +50,18 @@
             label="更新时间">
         </el-table-column>
         <el-table-column
+            label="是否启用">
+          <template slot-scope="scope">
+            <el-switch
+                v-model="scope.row.enable"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                @change="changeEnable(scope.row)"
+            >
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
             fixed="right"
             label="操作"
             width="100">

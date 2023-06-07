@@ -114,7 +114,14 @@ export default {
                 console.log(resp)
             })
         },
-
+        changeEnable(row) {
+            console.log(row)
+            request({
+                url: '/path-bind/change-enable',
+                method: 'post',
+                data: row
+            })
+        },
         resetDialog() {
             this.dialog = {
                 visible: false,
