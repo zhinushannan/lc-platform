@@ -47,4 +47,22 @@
           DEFAULT CHARSET = utf8mb4;
     </update>
 
+    <update id="createPathBind">
+        CREATE TABLE `path_bind`
+        (
+            `id`                 bigint(20)   NOT NULL COMMENT '通用字段，雪花ID',
+            `create_time`        datetime     NOT NULL COMMENT '通用字段，创建时间',
+            `update_time`        datetime     NOT NULL COMMENT '通用字段，更新时间',
+            `deleted`            tinyint(4)   NOT NULL COMMENT '通用字段，逻辑删除',
+            `parent_id`          bigint(20)            DEFAULT NULL COMMENT '目录ID',
+            `name`               varchar(255) NOT NULL COMMENT '目录/菜单名称',
+            `table_meta_info_id` bigint(20)            DEFAULT NULL COMMENT '菜单绑定的表ID',
+            `prefix`             varchar(255)          DEFAULT NULL COMMENT '目录的统一前缀',
+            `sort`               int(11)      NOT NULL DEFAULT '0' COMMENT '排序方式，默认按照创建时间排序',
+            `enable`             tinyint(4)   NOT NULL DEFAULT '1' COMMENT '是否启用',
+            PRIMARY KEY (`id`)
+        ) ENGINE = InnoDB
+          DEFAULT CHARSET = utf8mb4;
+    </update>
+
 </mapper>

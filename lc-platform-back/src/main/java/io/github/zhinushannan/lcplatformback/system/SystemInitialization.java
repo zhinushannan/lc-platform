@@ -49,6 +49,7 @@ public class SystemInitialization implements InitializingBean {
             }
             systemInitializationMapper.createTableMetaInfo();
             systemInitializationMapper.createFieldMetaInfo();
+            systemInitializationMapper.createPathBind();
 
             log.info("系统初始化已完成，请将 system.initialization 修改为 false 后开始运营您的系统！");
             log.info("系统初始化已完成，请将 system.initialization 修改为 false 后开始运营您的系统！");

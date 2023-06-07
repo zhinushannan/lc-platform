@@ -13,4 +13,6 @@ public interface SystemInitializationMapper {
     void createTableMetaInfo();
     void createFieldMetaInfo();
 
+    void createPathBind();
+
 }
