@@ -4,6 +4,7 @@ export default {
     name: "Index",
     data() {
         return {
+            breadcrumbs: [],
             tableId: '',
             tableLogicName: 'test',
             page: {
@@ -120,6 +121,46 @@ export default {
         })
 
         this.list()
-
+    },
+    created() {
+        let item = JSON.parse(localStorage.getItem('item'))
+        for (let i in item) {
+            let subs = item[i].subs
+            for (let j in subs) {
+                let sub = subs[j]
+                if (sub.index === this.$route.fullPath) {
+                    this.breadcrumbs.push(item[i].title, sub.title)
+                    break
+                }
+            }
+        }
+    },
+    beforeRouteEnter(to, from, next) {
+        let item = JSON.parse(localStorage.getItem('item'))
+        for (let i in item) {
+            let subs = item[i].subs
+            for (let j in subs) {
+                let sub = subs[j]
+                if (sub.index === to.fullPath) {
+                    to.meta.title = sub.title
+                    break
+                }
+            }
+        }
+        next()
+    },
+    beforeRouteUpdate(to, from, next) {
+        let item = JSON.parse(localStorage.getItem('item'))
+        for (let i in item) {
+            let subs = item[i].subs
+            for (let j in subs) {
+                let sub = subs[j]
+                if (sub.index === to.fullPath) {
+                    to.meta.title = sub.title
+                    break
+                }
+            }
+        }
+        next()
     }
 }

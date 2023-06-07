@@ -41,6 +41,10 @@ router.beforeEach((to, from, next) => {
     }
 });
 
+router.afterEach((to, from) => {
+    document.title = `${to.meta.title} | vue-manage-system`;
+})
+
 new Vue({
     router,
     i18n,

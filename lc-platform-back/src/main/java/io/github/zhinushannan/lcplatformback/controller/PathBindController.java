@@ -180,7 +180,7 @@ public class PathBindController {
                 .title(dir1.getName())
                 .subs(Optional.of(parentIdPathMap.get(dir1.getId())).orElse(new ArrayList<>()).stream()
                         .map(path -> SideBarItemsResp.SubSideBar.builder()
-                                .index("/" + dir1.getPrefix() + "/" + tableIdTableMap.get(path.getTableMetaInfoId()).getLogicTableName())
+                                .index("/lc/" + dir1.getPrefix() + "/" + tableIdTableMap.get(path.getTableMetaInfoId()).getLogicTableName())
                                 .title(path.getName())
                                 .build())
                         .collect(Collectors.toList()))

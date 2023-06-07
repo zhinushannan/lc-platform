@@ -5,10 +5,10 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          通用页面
+          {{ breadcrumbs[0] }}
         </el-breadcrumb-item>
         <el-breadcrumb-item>
-          通用页面
+          {{ breadcrumbs[1] }}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>

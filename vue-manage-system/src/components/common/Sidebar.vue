@@ -193,6 +193,7 @@ export default {
       for (let i in data) {
         this.items.push(data[i])
       }
+      localStorage.setItem('item', JSON.stringify(resp.data))
     })
   }
 };
