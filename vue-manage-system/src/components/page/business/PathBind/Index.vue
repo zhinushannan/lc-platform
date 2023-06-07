@@ -28,8 +28,10 @@
           border
           :tree-props="{children: 'children', hasChildren: true}">
         <el-table-column
-            prop="name"
             label="目录名称">
+          <template slot-scope="scope">
+            <i :class="scope.row.icon"></i>{{ scope.row.name }}
+          </template>
         </el-table-column>
         <el-table-column
             prop="prefix"
@@ -132,11 +134,15 @@
           <el-form-item label="目录前缀" v-if="dialog.operate === 'dir'">
             <el-input v-model="dialog.data.prefix"></el-input>
           </el-form-item>
+          <el-form-item label="图标" v-if="dialog.operate === 'dir'">
+            <el-input v-model="dialog.data.icon"></el-input>
+          </el-form-item>
           <el-form-item label="排序">
             <el-input v-model="dialog.data.sort"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
+          <el-button @click="viewIcon()">查 看 图 标</el-button>
           <el-button @click="handleClose">取 消</el-button>
           <el-button type="primary" @click="commit()">确 定</el-button>
         </span>

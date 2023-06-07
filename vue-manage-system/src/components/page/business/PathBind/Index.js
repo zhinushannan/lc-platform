@@ -165,6 +165,9 @@ export default {
         handleCurrentChange(val) {
             this.page.current = val
             this.list()
+        },
+        viewIcon() {
+            window.open("https://element.eleme.cn/#/zh-CN/component/icon", "_blank")
         }
     },
     mounted() {

@@ -64,6 +64,7 @@ public class PathBindController {
     public ResultBean<String> addDir(@RequestBody PathBindReq pathBindReq) {
         PathBind dir = PathBind.builder()
                 .name(Opt.ofBlankAble(pathBindReq.getName()).orElseThrow(() -> PathBindException.DIR_NAME_BLANK))
+                .icon(pathBindReq.getIcon())
                 .prefix(Opt.ofBlankAble(pathBindReq.getPrefix()).orElseThrow(() -> PathBindException.DIR_PATH_BLANK))
                 .sort(pathBindReq.getSort())
                 .build();
@@ -200,7 +201,7 @@ public class PathBindController {
         Map<Long, TableMetaInfo> tableIdTableMap = tableIds.isEmpty() ? new HashMap<>() : tableMetaInfoService.listByIds(tableIds).stream().collect(Collectors.toMap(TableMetaInfo::getId, t -> t));
 
         List<SideBarItemsResp> collect = dir.stream().map(dir1 -> SideBarItemsResp.builder()
-                .icon("")
+                .icon(dir1.getIcon())
                 .index(dir1.getName())
                 .title(dir1.getName())
                 .subs(Optional.ofNullable(parentIdPathMap.get(dir1.getId())).orElse(new ArrayList<>()).stream()

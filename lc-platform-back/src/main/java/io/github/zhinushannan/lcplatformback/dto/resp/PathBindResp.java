@@ -15,6 +15,8 @@ public class PathBindResp {
 
     private String name;
 
+    private String icon;
+
     private String prefix;
 
     private Integer sort;

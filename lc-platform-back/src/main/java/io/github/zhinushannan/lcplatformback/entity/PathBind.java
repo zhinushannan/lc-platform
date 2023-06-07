@@ -31,6 +31,9 @@ public class PathBind extends BaseEntity {
     @TableField("name")
     private String name;
 
+    @TableField("icon")
+    private String icon;
+
     @TableField("prefix")
     private String prefix;
 
