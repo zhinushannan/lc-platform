@@ -1,4 +1,6 @@
 import request from "@/utils/request";
+import * as buffer from "buffer";
+import {f} from "vuedraggable/dist/vuedraggable.common";
 
 export default {
     name: "Index",
@@ -81,6 +83,11 @@ export default {
             let tableMetaInfoId = row.tableMetaInfoId
             let parentId = row.parentId
 
+            if (!parentId) {
+                this.dialog.visible = true
+                return
+            }
+
             request({
                 url: `/path-bind/query-dir-id?pathId=${parentId}`,
                 method: 'get'
@@ -111,7 +118,13 @@ export default {
                 method: 'post',
                 data: this.dialog.data
             }).then((resp) => {
-                console.log(resp)
+                if (resp.code === 200) {
+                    this.dialog.visible = false
+                    this.$message.success(resp.message)
+                    this.list()
+                } else {
+                    this.$message.error(resp.message)
+                }
             })
         },
         changeEnable(row) {
@@ -120,6 +133,13 @@ export default {
                 url: '/path-bind/change-enable',
                 method: 'post',
                 data: row
+            }).then((resp) => {
+                if (resp.code === 200) {
+                    this.$message.success(resp.message)
+                    this.list()
+                } else {
+                    this.$message.error(resp.message)
+                }
             })
         },
         resetDialog() {

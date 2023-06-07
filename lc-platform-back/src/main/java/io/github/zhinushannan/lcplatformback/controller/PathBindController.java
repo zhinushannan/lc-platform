@@ -65,6 +65,7 @@ public class PathBindController {
         PathBind dir = PathBind.builder()
                 .name(Opt.ofBlankAble(pathBindReq.getName()).orElseThrow(() -> PathBindException.DIR_NAME_BLANK))
                 .prefix(Opt.ofBlankAble(pathBindReq.getPrefix()).orElseThrow(() -> PathBindException.DIR_PATH_BLANK))
+                .sort(pathBindReq.getSort())
                 .build();
         pathBindService.save(dir);
         return ResultBean.success("添加成功！");
@@ -79,6 +80,7 @@ public class PathBindController {
                 .parentId(pathBind.getId())
                 .name(Opt.ofBlankAble(pathBindReq.getName()).orElseThrow(() -> PathBindException.DIR_NAME_BLANK))
                 .tableMetaInfoId(tableMetaInfo.getId())
+                .sort(pathBindReq.getSort())
                 .build();
         pathBindService.save(build);
         return ResultBean.success("添加成功！");
