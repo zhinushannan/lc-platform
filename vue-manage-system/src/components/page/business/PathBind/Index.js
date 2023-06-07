@@ -67,9 +67,47 @@ export default {
             this.dialog.title = '新增路径'
             this.dialog.visible = true
         },
-        commit() {
+        edit(row) {
+            if (!row.parentId) {
+                this.dialog.operate = 'dir'
+                this.dialog.title = '修改目录'
+            } else {
+                this.dialog.operate = 'path'
+                this.dialog.title = '修改路径'
+            }
+
+            this.dialog.data = JSON.parse(JSON.stringify(row))
+
+            let tableMetaInfoId = row.tableMetaInfoId
+            let parentId = row.parentId
+
             request({
-                url: `/path-bind/add-${this.dialog.operate}`,
+                url: `/path-bind/query-dir-id?pathId=${parentId}`,
+                method: 'get'
+            }).then((resp) => {
+                this.dirs.records = resp.data
+                this.dirs.loading = false
+                request({
+                    url: `/path-bind/query-table-id?tableId=${tableMetaInfoId}`,
+                    method: 'get'
+                }).then((resp) => {
+                    this.table.records = resp.data
+                    this.table.loading = false
+
+                    this.dialog.visible = true
+                })
+            })
+        },
+        commit() {
+            let opera = ''
+            if (!this.dialog.data.id) {
+                opera = 'add'
+            } else {
+                opera = 'modify'
+            }
+
+            request({
+                url: `/path-bind/${opera}-${this.dialog.operate}`,
                 method: 'post',
                 data: this.dialog.data
             }).then((resp) => {

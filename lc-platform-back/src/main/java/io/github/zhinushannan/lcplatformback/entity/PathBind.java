@@ -38,4 +38,7 @@ public class PathBind extends BaseEntity {
     @TableField("table_meta_info_id")
     private Long tableMetaInfoId;
 
+    @TableField("sort")
+    private Integer sort;
+
 }

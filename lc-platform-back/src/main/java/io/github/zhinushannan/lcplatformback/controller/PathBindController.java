@@ -49,7 +49,8 @@ public class PathBindController {
             return ResultBean.success(nullPage);
         }
 
-        Map<Long, List<PathBind>> parentIdPathMap = pathBindService.list(new QueryWrapper<PathBind>().in("parent_id", ids)).stream().collect(Collectors.groupingBy(PathBind::getParentId));
+        condition.getQueryWrapper().clear();
+        Map<Long, List<PathBind>> parentIdPathMap = pathBindService.list(condition.getQueryWrapper().in("parent_id", ids)).stream().collect(Collectors.groupingBy(PathBind::getParentId));
 
         IPage<PathBindResp> convert = page.convert(pathBind -> {
             PathBindResp pathBindResp = BeanUtil.copyProperties(pathBind, PathBindResp.class);
@@ -94,7 +95,7 @@ public class PathBindController {
             throw PathBindException.NOT_IS_DIR;
         }
 
-        pathBindService.remove(new QueryWrapper<PathBind>().eq("parent_id", dirId));
+        pathBindService.remove(new QueryWrapper<PathBind>().orderByAsc("sort").eq("parent_id", dirId));
         pathBindService.removeById(dirId);
 
         return ResultBean.success("删除成功！");
@@ -139,7 +140,14 @@ public class PathBindController {
 
     @GetMapping("query-dir")
     public ResultBean<List<PathBindResp>> queryDir(@RequestParam("name") String name) {
-        List<PathBind> pathBinds = pathBindService.list(new QueryWrapper<PathBind>().like("name", name).isNull("parent_id"));
+        List<PathBind> pathBinds = pathBindService.list(new QueryWrapper<PathBind>().like("name", name).isNull("parent_id").orderByAsc("sort"));
+        List<PathBindResp> pathBindResps = BeanUtil.copyToList(pathBinds, PathBindResp.class);
+        return ResultBean.success(pathBindResps);
+    }
+
+    @GetMapping("query-dir-id")
+    public ResultBean<List<PathBindResp>> queryDirById(@RequestParam("pathId") Long pathId) {
+        List<PathBind> pathBinds = pathBindService.list(new QueryWrapper<PathBind>().eq("id", pathId).isNull("parent_id").orderByAsc("sort"));
         List<PathBindResp> pathBindResps = BeanUtil.copyToList(pathBinds, PathBindResp.class);
         return ResultBean.success(pathBindResps);
     }
@@ -153,7 +161,24 @@ public class PathBindController {
         }
 
         List<Long> tableIds = tableMetaInfos.stream().map(TableMetaInfo::getId).collect(Collectors.toList());
-        Map<Long, PathBind> tableMetaInfoIdPathBindMap = pathBindService.list(new QueryWrapper<PathBind>().in("table_meta_info_id", tableIds)).stream().collect(Collectors.toMap(PathBind::getTableMetaInfoId, p -> p));
+        Map<Long, PathBind> tableMetaInfoIdPathBindMap = pathBindService.list(new QueryWrapper<PathBind>().in("table_meta_info_id", tableIds).orderByAsc("sort")).stream().collect(Collectors.toMap(PathBind::getTableMetaInfoId, p -> p));
+
+        List<TableMetaInfoPathBindResp> tableMetaInfoPathBindResps = BeanUtil.copyToList(tableMetaInfos, TableMetaInfoPathBindResp.class);
+        tableMetaInfoPathBindResps.forEach(tableMetaInfoPathBindResp -> tableMetaInfoPathBindResp.setPathBindResp(BeanUtil.copyProperties(tableMetaInfoIdPathBindMap.get(tableMetaInfoPathBindResp.getId()), PathBindResp.class)));
+
+        return ResultBean.success(tableMetaInfoPathBindResps);
+    }
+
+    @GetMapping("query-table-id")
+    public ResultBean<List<TableMetaInfoPathBindResp>> queryTableById(@RequestParam("tableId") Long tableId) {
+        List<TableMetaInfo> tableMetaInfos = tableMetaInfoService.list(new QueryWrapper<TableMetaInfo>().eq("id", tableId));
+
+        if (tableMetaInfos.isEmpty()) {
+            return ResultBean.success(new ArrayList<>());
+        }
+
+        List<Long> tableIds = tableMetaInfos.stream().map(TableMetaInfo::getId).collect(Collectors.toList());
+        Map<Long, PathBind> tableMetaInfoIdPathBindMap = pathBindService.list(new QueryWrapper<PathBind>().in("table_meta_info_id", tableIds).orderByAsc("sort")).stream().collect(Collectors.toMap(PathBind::getTableMetaInfoId, p -> p));
 
         List<TableMetaInfoPathBindResp> tableMetaInfoPathBindResps = BeanUtil.copyToList(tableMetaInfos, TableMetaInfoPathBindResp.class);
         tableMetaInfoPathBindResps.forEach(tableMetaInfoPathBindResp -> tableMetaInfoPathBindResp.setPathBindResp(BeanUtil.copyProperties(tableMetaInfoIdPathBindMap.get(tableMetaInfoPathBindResp.getId()), PathBindResp.class)));
@@ -163,7 +188,7 @@ public class PathBindController {
 
     @GetMapping("sidebar")
     public ResultBean<List<SideBarItemsResp>> getSidebar() {
-        List<PathBind> list = pathBindService.list();
+        List<PathBind> list = pathBindService.list(new QueryWrapper<PathBind>().orderByAsc("sort"));
 
         List<PathBind> dir = list.stream().filter(pathBind -> pathBind.getParentId() == null).collect(Collectors.toList());
 

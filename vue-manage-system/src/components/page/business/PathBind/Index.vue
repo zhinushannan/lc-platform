@@ -36,6 +36,10 @@
             label="目录前缀/路径">
         </el-table-column>
         <el-table-column
+            prop="sort"
+            label="排序">
+        </el-table-column>
+        <el-table-column
             prop="createTime"
             :formatter="dataFormatter"
             label="创建时间">
@@ -45,7 +49,14 @@
             :formatter="dataFormatter"
             label="更新时间">
         </el-table-column>
-
+        <el-table-column
+            fixed="right"
+            label="操作"
+            width="100">
+          <template slot-scope="scope">
+            <el-button @click="edit(scope.row)" type="text" size="small">编辑</el-button>
+          </template>
+        </el-table-column>
       </el-table>
 
       <el-pagination
@@ -108,6 +119,9 @@
           </el-form-item>
           <el-form-item label="目录前缀" v-if="dialog.operate === 'dir'">
             <el-input v-model="dialog.data.prefix"></el-input>
+          </el-form-item>
+          <el-form-item label="排序">
+            <el-input v-model="dialog.data.sort"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

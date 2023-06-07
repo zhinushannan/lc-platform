@@ -10,13 +10,16 @@ import java.util.List;
 @Data
 public class PathBindResp {
 
-
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long parentId;
 
     private String name;
 
     private String prefix;
 
+    private Integer sort;
+
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long tableMetaInfoId;
 
     @JsonSerialize(using = ToStringSerializer.class)
