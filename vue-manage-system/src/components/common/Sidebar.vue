@@ -53,6 +53,7 @@
 
 <script>
 import bus from '../common/bus';
+import request from "@/utils/request";
 
 export default {
   data() {
@@ -182,6 +183,17 @@ export default {
       this.collapse = msg;
       bus.$emit('collapse-content', msg);
     });
+  },
+  mounted() {
+    request({
+      url: '/path-bind/sidebar',
+      method: 'get'
+    }).then((resp) => {
+      let data = resp.data
+      for (let i in data) {
+        this.items.push(data[i])
+      }
+    })
   }
 };
 </script>

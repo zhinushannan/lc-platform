@@ -10,6 +10,7 @@ import io.github.zhinushannan.lcplatformback.bean.ResultBean;
 import io.github.zhinushannan.lcplatformback.dto.condition.PathBindPageCondition;
 import io.github.zhinushannan.lcplatformback.dto.req.PathBindReq;
 import io.github.zhinushannan.lcplatformback.dto.resp.PathBindResp;
+import io.github.zhinushannan.lcplatformback.dto.resp.SideBarItemsResp;
 import io.github.zhinushannan.lcplatformback.dto.resp.TableMetaInfoPathBindResp;
 import io.github.zhinushannan.lcplatformback.entity.PathBind;
 import io.github.zhinushannan.lcplatformback.entity.TableMetaInfo;
@@ -19,11 +20,9 @@ import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -160,6 +159,33 @@ public class PathBindController {
         tableMetaInfoPathBindResps.forEach(tableMetaInfoPathBindResp -> tableMetaInfoPathBindResp.setPathBindResp(BeanUtil.copyProperties(tableMetaInfoIdPathBindMap.get(tableMetaInfoPathBindResp.getId()), PathBindResp.class)));
 
         return ResultBean.success(tableMetaInfoPathBindResps);
+    }
+
+    @GetMapping("sidebar")
+    public ResultBean<List<SideBarItemsResp>> getSidebar() {
+        List<PathBind> list = pathBindService.list();
+
+        List<PathBind> dir = list.stream().filter(pathBind -> pathBind.getParentId() == null).collect(Collectors.toList());
+
+        list.removeAll(dir);
+
+        Map<Long, List<PathBind>> parentIdPathMap = list.stream().collect(Collectors.groupingBy(PathBind::getParentId));
+
+        Set<Long> tableIds = list.stream().map(PathBind::getTableMetaInfoId).collect(Collectors.toSet());
+        Map<Long, TableMetaInfo> tableIdTableMap = tableMetaInfoService.listByIds(tableIds).stream().collect(Collectors.toMap(TableMetaInfo::getId, t -> t));
+
+        List<SideBarItemsResp> collect = dir.stream().map(dir1 -> SideBarItemsResp.builder()
+                .icon("")
+                .index(dir1.getName())
+                .title(dir1.getName())
+                .subs(Optional.of(parentIdPathMap.get(dir1.getId())).orElse(new ArrayList<>()).stream()
+                        .map(path -> SideBarItemsResp.SubSideBar.builder()
+                                .index("/" + dir1.getPrefix() + "/" + tableIdTableMap.get(path.getTableMetaInfoId()).getLogicTableName())
+                                .title(path.getName())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build()).collect(Collectors.toList());
+        return ResultBean.success(collect);
     }
 
 }
