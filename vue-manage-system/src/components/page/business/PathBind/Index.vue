@@ -5,10 +5,10 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          服务管理
+          业务管理
         </el-breadcrumb-item>
         <el-breadcrumb-item>
-          服务绑定
+          业务绑定
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>

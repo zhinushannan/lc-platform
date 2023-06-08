@@ -89,13 +89,13 @@ export default {
             }
 
             request({
-                url: `/path-bind/query-dir-id?pathId=${parentId}`,
+                url: `/path-bind/query-dir?id=${parentId}`,
                 method: 'get'
             }).then((resp) => {
                 this.dirs.records = resp.data
                 this.dirs.loading = false
                 request({
-                    url: `/path-bind/query-table-id?tableId=${tableMetaInfoId}`,
+                    url: `/path-bind/query-table?id=${tableMetaInfoId}`,
                     method: 'get'
                 }).then((resp) => {
                     this.table.records = resp.data

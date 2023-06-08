@@ -17,7 +17,7 @@ export default new Router({
                 {
                     path: '/business/manage',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/business/Manage/Index.vue'),
-                    meta: { title: '服务管理' }
+                    meta: { title: '业务管理' }
                 },
                 {
                     path: '/business/bind',
