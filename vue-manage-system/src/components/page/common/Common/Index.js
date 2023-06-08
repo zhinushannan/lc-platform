@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import bus from "@/components/common/bus";
 
 export default {
     name: "Index",
@@ -136,7 +137,7 @@ export default {
         }).then((resp) => {
             this.dialog.formStructure = resp.data
 
-            for(let i in resp.data) {
+            for (let i in resp.data) {
                 if (resp.data[i].enableShow) {
                     this.visibleFields.push(resp.data[i])
                 }
@@ -157,6 +158,10 @@ export default {
                     break
                 }
             }
+        }
+        if (this.tableId === '') {
+            bus.$emit("close_current_tags")
+            this.$router.push("/404")
         }
     },
     beforeRouteEnter(to, from, next) {

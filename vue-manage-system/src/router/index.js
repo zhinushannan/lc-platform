@@ -42,7 +42,7 @@ export default new Router({
                 {
                     path: 'lc/:dir/:path',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/common/Common/Index.vue'),
-                    meta: { title: '通用页面' },
+                    meta: { title: 'default' },
                 },
                 {
                     path: '/common/common',
