@@ -132,6 +132,14 @@ export default {
             this.dialog.operate = 'add'
             this.dialog.visible = true
         },
+        handleEdit(scope) {
+            let index = scope.$index
+            this.dialog.item = JSON.parse(JSON.stringify(scope.row))
+            this.dialog.item['index'] = index
+            this.dialog.title = '修改字段'
+            this.dialog.operate = 'modify'
+            this.dialog.visible = true
+        },
         removeField(index) {
             if (this.metaInfo.fieldInfos.length === 1) {
                 this.$message.error("至少要保留一个字段")
@@ -160,6 +168,9 @@ export default {
             let fieldInfos = this.metaInfo.fieldInfos
             let message = []
             for (let i in fieldInfos) {
+                if (this.dialog.operate === 'modify' && i == this.dialog.item.index) {
+                    continue
+                }
                 if (currentItem.fieldLogicName === fieldInfos[i].fieldLogicName && message.indexOf('存在重复逻辑字段名') === -1) {
                     message.push('存在重复逻辑字段名')
                 }
@@ -176,7 +187,11 @@ export default {
                 return
             }
 
-            this.metaInfo.fieldInfos.push(JSON.parse(JSON.stringify(this.dialog.item)))
+            if (this.dialog.operate === 'add') {
+                this.metaInfo.fieldInfos.push(JSON.parse(JSON.stringify(this.dialog.item)))
+            } else {
+                this.$set(this.metaInfo.fieldInfos, this.dialog.item.index, JSON.parse(JSON.stringify(this.dialog.item)))
+            }
             this.closeDialog()
         },
         closeDialog() {
