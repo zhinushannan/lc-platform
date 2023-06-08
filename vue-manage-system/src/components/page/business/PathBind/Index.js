@@ -119,7 +119,7 @@ export default {
                 data: this.dialog.data
             }).then((resp) => {
                 if (resp.code === 200) {
-                    this.dialog.visible = false
+                    this.resetDialog()
                     this.$message.success(resp.message)
                     this.list()
                 } else {
