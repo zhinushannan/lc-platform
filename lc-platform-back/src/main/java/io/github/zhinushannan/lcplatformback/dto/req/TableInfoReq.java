@@ -23,6 +23,7 @@ public class TableInfoReq {
         private String fieldJdbcType;
         private Integer fieldJdbcLength;
         private Boolean nullable;
+        private Boolean enableShow;
     }
 
 }

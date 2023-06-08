@@ -96,7 +96,7 @@ public class CreateBusinessServiceImpl implements CreateBusinessService {
                                     null
                     )
                     .nullable(fieldInfo.getNullable())
-                    .enableShow(Boolean.FALSE)
+                    .enableShow(fieldInfo.getEnableShow())
                     .searchMode(SelectModeEnum.DISABLE.getValue())
                     .build();
             fieldMetaInfos.add(fieldMetaInfo);
