@@ -20,13 +20,13 @@ public class CrudController {
 
     @PostMapping("/{table_logic_name}")
     public ResultBean<String> save(@PathVariable("table_logic_name") String tableLogicName,
-                           @RequestBody JSONObject jsonObject) {
+                                   @RequestBody JSONObject jsonObject) {
         return crudService.save(tableLogicName, jsonObject);
     }
 
     @PutMapping("/{table_logic_name}")
-    public String update(@PathVariable("table_logic_name") String tableLogicName,
-                         @RequestBody JSONObject jsonObject) {
+    public ResultBean<String> update(@PathVariable("table_logic_name") String tableLogicName,
+                                     @RequestBody JSONObject jsonObject) {
         return crudService.update(tableLogicName, jsonObject);
     }
 
@@ -38,8 +38,8 @@ public class CrudController {
     }
 
     @DeleteMapping("/{table_logic_name}")
-    public String delete(@PathVariable("table_logic_name") String tableLogicName,
-                         @RequestBody List<Long> ids) {
+    public ResultBean<String> delete(@PathVariable("table_logic_name") String tableLogicName,
+                                     @RequestBody List<Long> ids) {
         return crudService.delete(tableLogicName, ids);
     }
 

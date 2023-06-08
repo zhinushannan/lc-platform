@@ -33,7 +33,6 @@ export default {
                 method: 'post',
                 data: this.page
             }).then((resp) => {
-                console.log(resp)
                 this.page = resp.data
             })
         },
@@ -54,7 +53,13 @@ export default {
                 method: 'post',
                 data: this.dialog.formData
             }).then((resp) => {
-                console.log(resp)
+                if (resp.code === 200) {
+                    this.$message.success(resp.message)
+                    this.list()
+                    this.resetDialog()
+                } else {
+                    this.$message.error(resp.message)
+                }
             })
         },
         update() {
@@ -63,7 +68,13 @@ export default {
                 method: 'put',
                 data: this.dialog.formData
             }).then((resp) => {
-                console.log(resp)
+                if (resp.code === 200) {
+                    this.$message.success(resp.message)
+                    this.list()
+                    this.resetDialog()
+                } else {
+                    this.$message.error(resp.message)
+                }
             })
         },
         delBatch() {
@@ -76,7 +87,13 @@ export default {
                 method: 'delete',
                 data: delIds
             }).then((resp) => {
-                console.log(resp)
+                if (resp.code === 200) {
+                    this.$message.success(resp.message)
+                    this.list()
+                    this.resetDialog()
+                } else {
+                    this.$message.error(resp.message)
+                }
             })
         },
         addRecord() {
@@ -90,6 +107,12 @@ export default {
             this.dialog.title = '修改'
             this.dialog.opera = 'update'
             this.dialog.formData = JSON.parse(JSON.stringify(row))
+        },
+        resetDialog() {
+            this.dialog.visible = false
+            this.dialog.title = ''
+            this.dialog.opera = ''
+            this.dialog.formData = {}
         },
         handleSizeChange(val) {
             this.page.size = val
@@ -108,7 +131,6 @@ export default {
     },
     mounted() {
         request({
-            // url: `/business/fields-by-table-logic?tableLogicName=${this.tableLogicName}`,
             url: `/business/fields?tableId=${this.tableId}`,
             method: 'get'
         }).then((resp) => {

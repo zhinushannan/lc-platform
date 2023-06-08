@@ -17,7 +17,13 @@
 
       <div style="margin-bottom: 10px">
         <el-button type="primary" icon="el-icon-plus" @click="addRecord()">添加数据</el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="delBatch()">删除选中</el-button>
+        <el-popconfirm
+            title="删除后不可恢复，请再次确认是否删除？"
+            @confirm="delBatch()"
+            style="margin-left: 10px"
+        >
+          <el-button slot="reference" type="danger" icon="el-icon-delete">删除选中</el-button>
+        </el-popconfirm>
       </div>
 
 

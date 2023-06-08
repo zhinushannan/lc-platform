@@ -59,11 +59,11 @@ public class CrudServiceImpl implements CrudService {
         }
 
         crudMapper.save("t_" + tableMetaInfo.getPhysicsTableSerial(), fields, values);
-        return null;
+        return ResultBean.success("新增成功！");
     }
 
     @Override
-    public String update(String tableLogicName, JSONObject jsonObject) {
+    public ResultBean<String> update(String tableLogicName, JSONObject jsonObject) {
         TableMetaInfo tableMetaInfo = Cache.getTableMetaInfoByTableLogicName(tableLogicName);
         List<FieldMetaInfo> fieldMetaInfos = Cache.getFieldMetaInfosByTableId(tableMetaInfo.getId());
 
@@ -83,14 +83,14 @@ public class CrudServiceImpl implements CrudService {
 
         crudMapper.update("t_" + tableMetaInfo.getPhysicsTableSerial(), jsonObject.get("id", Long.class), values);
         System.out.println("jsonObject" + jsonObject);
-        return null;
+        return ResultBean.success("修改成功！");
     }
 
     @Override
-    public String delete(String tableLogicName, List<Long> ids) {
+    public ResultBean<String> delete(String tableLogicName, List<Long> ids) {
         TableMetaInfo tableMetaInfo = Cache.getTableMetaInfoByTableLogicName(tableLogicName);
         crudMapper.delete("t_" + tableMetaInfo.getPhysicsTableSerial(), ids);
-        return null;
+        return ResultBean.success("删除成功！");
     }
 
     @Override
