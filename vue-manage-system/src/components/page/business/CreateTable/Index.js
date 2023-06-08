@@ -103,6 +103,15 @@ export default {
                     this.tableId = resp.data
                     this.fullscreenLoading = false;
                     this.$message.success('新增成功')
+
+                    this.metaInfo = {
+                        tableInfo: {
+                            tableLogicName: '',
+                            tableBusinessName: ''
+                        },
+                        fieldInfos: [],
+                    }
+
                     bus.$emit('close_current_tags')
                 } else {
                     this.$message.error(resp.message)
