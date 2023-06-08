@@ -63,15 +63,15 @@ export default {
         {
           icon: 'el-icon-rank',
           index: '0',
-          title: '服务管理',
+          title: '业务管理',
           subs: [
             {
               index: '/business/manage',
-              title: '服务列表'
+              title: '业务列表'
             },
             {
               index: '/business/bind',
-              title: '服务绑定'
+              title: '业务绑定'
             }
           ]
         },

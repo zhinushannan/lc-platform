@@ -108,7 +108,8 @@ export default {
     },
     mounted() {
         request({
-            url: `/business/fields-by-table-logic?tableLogicName=${this.tableLogicName}`,
+            // url: `/business/fields-by-table-logic?tableLogicName=${this.tableLogicName}`,
+            url: `/business/fields?tableId=${this.tableId}`,
             method: 'get'
         }).then((resp) => {
             this.dialog.formStructure = resp.data
@@ -130,6 +131,7 @@ export default {
                 let sub = subs[j]
                 if (sub.index === this.$route.fullPath) {
                     this.breadcrumbs.push(item[i].title, sub.title)
+                    this.tableId = sub.tableId
                     break
                 }
             }

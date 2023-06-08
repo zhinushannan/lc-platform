@@ -14,6 +14,8 @@ public class PathBindException extends LowCodePlatformException {
 
     public static final PathBindException PARENT_ID_NULL = new PathBindException("父级目录ID为空");
 
+    public static final PathBindException PATH_NAME_OR_PREFIX_REPEAT = new PathBindException("目录的名称或路径重复");
+
     public PathBindException(String message) {
         super(message);
     }
