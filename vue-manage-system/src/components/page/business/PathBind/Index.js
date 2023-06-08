@@ -142,6 +142,20 @@ export default {
                 }
             })
         },
+        del(row) {
+            request({
+                url: `/path-bind/delete?id=${row.id}`,
+                method: 'delete'
+            }).then((resp) => {
+                if (resp.code === 200) {
+                    this.$message.success(resp.message)
+                    this.list()
+                } else {
+                    this.$message.error(resp.message)
+                }
+            })
+            console.log(row.id)
+        },
         resetDialog() {
             this.dialog = {
                 visible: false,

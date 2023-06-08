@@ -69,6 +69,12 @@
             width="100">
           <template slot-scope="scope">
             <el-button @click="edit(scope.row)" type="text" size="small">编辑</el-button>
+            <el-popconfirm
+                title="删除后不可恢复，请再次确认是否要删除？(删除目录时，会同步删除其包含的路径)"
+                @confirm="del(scope.row)"
+            >
+              <el-button slot="reference" type="text" size="small" style="color: red">删除</el-button>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>

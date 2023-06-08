@@ -72,20 +72,9 @@ public class PathBindController {
      * 1、判定是不是目录
      * 2、如果是目录，需要删除自己和所属的路径
      */
-    @DeleteMapping("delete-dir")
-    public ResultBean<String> deleteDir(@RequestParam("dirId") Long dirId) {
-        pathBindService.deleteDir(dirId);
-        return ResultBean.success("删除成功！");
-    }
-
-    /**
-     * 删除路径
-     * 注意：
-     * 1、判定是不是路径
-     */
-    @DeleteMapping("delete-path")
-    public ResultBean<String> deletePath(@RequestParam("pathId") Long pathId) {
-        pathBindService.deletePath(pathId);
+    @DeleteMapping("delete")
+    public ResultBean<String> deleteDir(@RequestParam("id") Long id) {
+        pathBindService.delete(id);
         return ResultBean.success("删除成功！");
     }
 

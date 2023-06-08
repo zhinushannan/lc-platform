@@ -46,19 +46,13 @@ public interface PathBindService extends IService<PathBind> {
     void addPath(PathBindReq pathBindReq);
 
     /**
-     * 删除目录
+     * 删除
      * 注意：
      * 1、判定是不是目录
      * 2、如果是目录，需要删除自己和所属的路径
      */
-    void deleteDir(Long dirId);
+    void delete(Long dirId);
 
-    /**
-     * 删除路径
-     * 注意：
-     * 1、判定是不是路径
-     */
-    void deletePath(Long pathId);
 
     /**
      * 修改目录

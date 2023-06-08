@@ -104,29 +104,11 @@ public class PathBindServiceImpl extends ServiceImpl<PathBindMapper, PathBind> i
 
     @Override
     @Transactional
-    public void deleteDir(Long dirId) {
-        PathBind pathBind = this.getByIdWithAssertNull(dirId);
-
-        // 判断是否是目录
-        if (pathBind.getParentId() != null) {
-            throw PathBindException.NOT_IS_DIR;
-        }
-
+    public void delete(Long dirId) {
+        this.getByIdWithAssertNull(dirId);
         // 删除目录和所属路径
-        this.remove(new QueryWrapper<PathBind>().orderByAsc("sort").eq("parent_id", dirId));
+        this.remove(new QueryWrapper<PathBind>().eq("parent_id", dirId));
         this.removeById(dirId);
-    }
-
-    @Override
-    public void deletePath(Long pathId) {
-        PathBind pathBind = this.getByIdWithAssertNull(pathId);
-
-        // 判断是否是路径
-        if (pathBind.getParentId() == null) {
-            throw PathBindException.NOT_IS_PATH;
-        }
-
-        this.removeById(pathId);
     }
 
     @Override
