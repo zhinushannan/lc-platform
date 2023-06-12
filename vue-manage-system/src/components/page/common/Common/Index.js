@@ -78,10 +78,14 @@ export default {
                 }
             })
         },
-        delBatch() {
+        delBatch(id) {
             let delIds = []
-            for (let i in this.multipleSelection) {
-                delIds.push(this.multipleSelection[i].id)
+            if (!id) {
+                for (let i in this.multipleSelection) {
+                    delIds.push(this.multipleSelection[i].id)
+                }
+            } else {
+                delIds = [id]
             }
             request({
                 url: `/crud/${this.tableLogicName}`,

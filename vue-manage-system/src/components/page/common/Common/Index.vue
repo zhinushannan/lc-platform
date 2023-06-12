@@ -58,6 +58,13 @@
           <template slot-scope="scope">
 <!--            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
             <el-button type="text" size="small" @click="modify(scope.row)">编辑</el-button>
+            <el-popconfirm
+                title="删除后不可恢复，请再次确认是否删除？"
+                @confirm="delBatch(scope.row.id)"
+                style="margin-left: 10px"
+            >
+              <el-button slot="reference" type="text" size="small" style="color: red">删除</el-button>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
