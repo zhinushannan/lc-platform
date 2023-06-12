@@ -16,4 +16,6 @@ public interface CrudService {
     ResultBean<String> delete(String tableLogicName, List<Long> ids);
 
     IPage<Map<String, Object>> page(String tableLogicName, ConditionDto condition);
+
+    ResultBean<List<String>> listKeyword(String tableLogicName, JSONObject jsonObject);
 }

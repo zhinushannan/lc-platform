@@ -13,6 +13,8 @@ import io.github.zhinushannan.lcplatformback.entity.TableMetaInfo;
 import io.github.zhinushannan.lcplatformback.exception.CrudException;
 import io.github.zhinushannan.lcplatformback.mapper.CrudMapper;
 import io.github.zhinushannan.lcplatformback.service.CrudService;
+import io.github.zhinushannan.lcplatformback.service.FieldMetaInfoService;
+import io.github.zhinushannan.lcplatformback.service.TableMetaInfoService;
 import io.github.zhinushannan.lcplatformback.system.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,11 @@ public class CrudServiceImpl implements CrudService {
     @Autowired
     private CrudMapper crudMapper;
 
+    @Autowired
+    private TableMetaInfoService tableMetaInfoService;
+
+    @Autowired
+    private FieldMetaInfoService fieldMetaInfoService;
 
     @Override
     public ResultBean<String> save(String tableLogicName, JSONObject jsonObject) {
@@ -101,8 +108,9 @@ public class CrudServiceImpl implements CrudService {
         Map<String, String> phyLogicMap = fieldMetaInfos.stream().collect(Collectors.toMap(t -> "f_" + t.getPhysicsFieldSerial(), FieldMetaInfo::getLogicFieldName));
 
         Page<Map<String, Object>> page = condition.getPage();
-        List<Map<String, Object>> data = crudMapper.list("t_" + tableMetaInfo.getPhysicsTableSerial(), phyLogicMap, (page.getSize() * (page.getCurrent() - 1)), page.getSize());
-        long total = crudMapper.count("t_" + tableMetaInfo.getPhysicsTableSerial());
+        String sqlWhere = condition.sqlWhere(fieldMetaInfos);
+        List<Map<String, Object>> data = crudMapper.list("t_" + tableMetaInfo.getPhysicsTableSerial(), phyLogicMap, sqlWhere, (page.getSize() * (page.getCurrent() - 1)), page.getSize());
+        long total = crudMapper.count("t_" + tableMetaInfo.getPhysicsTableSerial(), sqlWhere);
 
         Collection<String> logicNames = phyLogicMap.values();
         for (Map<String, Object> datum : data) {
@@ -121,5 +129,23 @@ public class CrudServiceImpl implements CrudService {
         System.out.println("total : " + total);
 
         return page;
+    }
+
+    @Override
+    public ResultBean<List<String>> listKeyword(String tableLogicName, JSONObject jsonObject) {
+        TableMetaInfo tableMetaInfo = Cache.getTableMetaInfoByTableLogicName(tableLogicName);
+        String businessFieldName = jsonObject.get("businessFieldName", String.class);
+        String keyword = jsonObject.get("keyword", String.class);
+
+        List<FieldMetaInfo> fieldMetaInfos = Cache.getFieldMetaInfosByTableId(tableMetaInfo.getId());
+
+        for (FieldMetaInfo fieldMetaInfo : fieldMetaInfos) {
+            if (fieldMetaInfo.getBusinessFieldName().equals(businessFieldName)) {
+                List<String> keywords = crudMapper.listKeywords("t_" + tableMetaInfo.getPhysicsTableSerial(), "f_" + fieldMetaInfo.getPhysicsFieldSerial(), keyword);
+                return ResultBean.success(keywords);
+            }
+        }
+
+        return ResultBean.success(Collections.emptyList());
     }
 }

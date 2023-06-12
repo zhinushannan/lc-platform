@@ -30,18 +30,28 @@
 
     <select id="list" resultType="map">
         select
-            `id` as `id`,
-            `create_time` as `createTime`,
-            `update_time` as `updateTime`,
-            <foreach collection="phyLogic.entrySet()" index="key" item="value" open=" " close=" " separator=", ">
-                `${key}` as `${value}`
-            </foreach>
-            from `${physicsTableName}` where `deleted`=0
+        `id` as `id`,
+        `create_time` as `createTime`,
+        `update_time` as `updateTime`,
+        <foreach collection="phyLogic.entrySet()" index="key" item="value" open=" " close=" " separator=", ">
+            `${key}` as `${value}`
+        </foreach>
+        from `${physicsTableName}` where `deleted`=0
+        <if test="sqlWhere">
+            ${sqlWhere}
+        </if>
         limit #{cursor}, #{size}
     </select>
 
     <select id="count" resultType="java.lang.Long">
-        select count(*) from `${physicsTableName}` where `deleted`=0;
+        select count(*) from `${physicsTableName}` where `deleted`=0
+        <if test="sqlWhere">
+            ${sqlWhere}
+        </if>
+    </select>
+
+    <select id="listKeywords" resultType="java.lang.String">
+        select distinct `${businessFieldName}` from `${physicsTableName}` where `deleted`=0 and `${businessFieldName}` like concat('%', #{keyword}, '%')
     </select>
 
 </mapper>

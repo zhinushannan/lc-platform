@@ -30,6 +30,12 @@ public class CrudController {
         return crudService.update(tableLogicName, jsonObject);
     }
 
+    @PostMapping("/{table_logic_name}/list-keyword")
+    public ResultBean<List<String>> listKeyword(@PathVariable("table_logic_name") String tableLogicName,
+                                                @RequestBody JSONObject jsonObject) {
+        return crudService.listKeyword(tableLogicName, jsonObject);
+    }
+
     @PostMapping("/{table_logic_name}/page")
     public ResultBean<IPage<Map<String, Object>>> page(@PathVariable("table_logic_name") String tableLogicName,
                                                        @RequestBody ConditionDto condition) {

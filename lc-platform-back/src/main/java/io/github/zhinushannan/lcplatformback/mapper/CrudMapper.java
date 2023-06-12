@@ -22,9 +22,14 @@ public interface CrudMapper {
 
     List<Map<String, Object>> list(@Param("physicsTableName") String physicsTableName,
                                    @Param("phyLogic") Map<String, String> phyLogic,
+                                   @Param("sqlWhere") String sqlWhere,
                                    @Param("cursor") long cursor,
                                    @Param("size") long size);
 
-    long count(@Param("physicsTableName") String physicsTableName);
+    long count(@Param("physicsTableName") String physicsTableName,
+               @Param("sqlWhere") String sqlWhere);
 
+    List<String> listKeywords(@Param("physicsTableName") String physicsTableName,
+                              @Param("businessFieldName") String businessFieldName,
+                              @Param("keyword") String keyword);
 }

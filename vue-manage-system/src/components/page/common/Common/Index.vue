@@ -15,6 +15,21 @@
 
     <div class="container">
 
+      <div style="margin-bottom: 10px" v-if="searchList.length > 0">
+        <div v-for="(item, index) in searchList" :key="index">
+          <el-select v-if="item.searchMode === 1" v-model="item.keyword" remote filterable :remote-method="fetchOptions(index)" :loading="item.loading" :placeholder="'选择' + item.businessFieldName">
+            <el-option v-for="option in item.options" :key="option" :label="option" :value="option"></el-option>
+          </el-select>
+
+          <el-input v-if="item.searchMode === 2" v-model="item.keyword" :placeholder="'模糊搜索' + item.businessFieldName" />
+
+          <el-input v-if="item.searchMode === 3" v-model="item.keyword" :placeholder="'精确匹配' + item.businessFieldName" />
+        </div>
+
+        <el-button type="primary" @click="search">搜索</el-button>
+
+      </div>
+
       <div style="margin-bottom: 10px">
         <el-button type="primary" icon="el-icon-plus" @click="addRecord()">添加数据</el-button>
         <el-popconfirm
@@ -56,7 +71,7 @@
             label="操作"
             width="100">
           <template slot-scope="scope">
-<!--            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
+            <!--            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
             <el-button type="text" size="small" @click="modify(scope.row)">编辑</el-button>
             <el-popconfirm
                 title="删除后不可恢复，请再次确认是否删除？"

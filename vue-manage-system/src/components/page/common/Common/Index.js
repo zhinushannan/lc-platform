@@ -12,7 +12,8 @@ export default {
                 current: 1,
                 size: 10,
                 records: [],
-                total: 0
+                total: 0,
+                conditions: []
             },
             // todo rules 校验
             dialog: {
@@ -24,11 +25,13 @@ export default {
                 rules: {}
             },
             visibleFields: [],
-            multipleSelection: []
+            multipleSelection: [],
+            searchList: [],
         }
     },
     methods: {
         list() {
+            console.log(this.page)
             request({
                 url: `/crud/${this.tableLogicName}/page`,
                 method: 'post',
@@ -132,6 +135,41 @@ export default {
         },
         handleSelectionChange(val) {
             this.multipleSelection = val;
+        },
+        fetchOptions(index) {
+            console.log('searchList', this.searchList)
+            console.log('items', this.items)
+            return (query) => {
+                // 在闭包中可以访问到当前选择器的索引 (index)
+                // 可以根据索引来区分每个选择器
+
+                // 发起远程请求获取选项
+                this.searchList[index].loading = true;
+
+                request({
+                    url: `/crud/${this.tableLogicName}/list-keyword`,
+                    method: 'post',
+                    data: {
+                        businessFieldName: this.searchList[index].businessFieldName,
+                        keyword: query
+                    }
+                }).then((resp) => {
+                    this.searchList[index].options = resp.data
+                    this.searchList[index].loading = false
+                })
+
+            };
+        },
+        search() {
+            this.page.conditions = []
+            for (let i in this.searchList) {
+                this.page.conditions.push({
+                    businessFieldName: this.searchList[i].businessFieldName,
+                    keyword: this.searchList[i].keyword,
+                    searchMode: this.searchList[i].searchMode
+                })
+            }
+            this.list()
         }
     },
     mounted() {
@@ -146,9 +184,26 @@ export default {
                     this.visibleFields.push(resp.data[i])
                 }
             }
+
+            // 搜索列表
+            for (let i in resp.data) {
+                if (resp.data[i].searchMode !== 1) {
+                    this.searchList.push({
+                        keyword: '',
+                        options: [],
+                        loading: false,
+                        businessFieldName: resp.data[i]['businessFieldName'],
+                        searchMode: resp.data[i].searchMode
+                    })
+
+                }
+            }
+
+            console.log(this.searchList)
         })
 
         this.list()
+
     },
     created() {
         let item = JSON.parse(localStorage.getItem('item'))
